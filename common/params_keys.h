@@ -138,7 +138,8 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
 
     // --- sunnypilot params --- //
     {"ApiCache_DriveStats", {PERSISTENT, JSON}},
-    {"AutoLaneChangeBsmDelay", {PERSISTENT | BACKUP, BOOL, "0"}},
+    // [sangw 수정] 사각지대에 차가 있으면 자동 차선 변경 지연 기본 켜짐
+    {"AutoLaneChangeBsmDelay", {PERSISTENT | BACKUP, BOOL, "1"}},
     // [sangw 수정] 자동 차선 변경 기본값: 1초 타이머 (원래 0 = Nudge)
     {"AutoLaneChangeTimer", {PERSISTENT | BACKUP, INT, "3"}},
     {"BlinkerLateralReengageDelay", {PERSISTENT | BACKUP, INT, "0"}},  // seconds
@@ -204,7 +205,8 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"ModelManager_ModelsCache", {PERSISTENT | BACKUP, JSON}},
 
     // Neural Network Lateral Control
-    {"NeuralNetworkLateralControl", {PERSISTENT | BACKUP, BOOL, "0"}},
+    // [sangw 수정] NNLC 기본 켜짐 (아이오닉5 모델 데이터 있음)
+    {"NeuralNetworkLateralControl", {PERSISTENT | BACKUP, BOOL, "1"}},
 
     // sunnylink params
     {"EnableSunnylinkUploader", {PERSISTENT | BACKUP, BOOL}},
