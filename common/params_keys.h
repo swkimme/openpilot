@@ -37,7 +37,8 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"DoShutdown", {CLEAR_ON_MANAGER_START, BOOL}},
     {"DoUninstall", {CLEAR_ON_MANAGER_START, BOOL}},
     {"DriverTooDistracted", {CLEAR_ON_MANAGER_START | CLEAR_ON_IGNITION_ON, BOOL}},
-    {"AlphaLongitudinalEnabled", {PERSISTENT | DEVELOPMENT_ONLY | BACKUP, BOOL}},
+    // [sangw 수정] openpilot 종방향 제어(알파) 기본 켜짐
+    {"AlphaLongitudinalEnabled", {PERSISTENT | DEVELOPMENT_ONLY | BACKUP, BOOL, "1"}},
     // [sangw 수정] 실험 모드 기본 켜짐 + 확인 팝업 건너뜀
     {"ExperimentalMode", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"ExperimentalModeConfirmed", {PERSISTENT | BACKUP, BOOL, "1"}},
