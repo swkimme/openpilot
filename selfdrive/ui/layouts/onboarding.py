@@ -11,7 +11,7 @@ from openpilot.system.ui.widgets import Widget
 from openpilot.system.ui.widgets.button import Button, ButtonStyle
 from openpilot.system.ui.widgets.label import Label
 from openpilot.selfdrive.ui.ui_state import ui_state
-from openpilot.system.version import terms_version, training_version, terms_version_sp
+from openpilot.system.version import terms_version, training_version, terms_version_sp, sunnylink_consent_declined
 
 from openpilot.selfdrive.ui.sunnypilot.layouts.onboarding import SunnylinkOnboarding
 
@@ -176,6 +176,11 @@ class DeclinePage(Widget):
 class OnboardingWindow(Widget):
   def __init__(self):
     super().__init__()
+    # [sangw 수정] 약관 동의 자동 처리 + sunnylink는 사용 안 함(거절)으로 고정
+    ui_state.params.put("HasAcceptedTerms", terms_version, block=True)
+    ui_state.params.put("HasAcceptedTermsSP", terms_version_sp, block=True)
+    ui_state.params.put_bool("SunnylinkEnabled", False)
+    ui_state.params.put("CompletedSunnylinkConsentVersion", sunnylink_consent_declined)
     self._accepted_terms: bool = ui_state.params.get("HasAcceptedTerms") == terms_version
     self._training_done: bool = ui_state.params.get("CompletedTrainingVersion") == training_version
     # [sangw 수정] 튜토리얼(트레이닝 가이드) 건너뛰기: 완료한 것으로 처리

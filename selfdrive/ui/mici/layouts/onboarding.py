@@ -343,6 +343,11 @@ class OnboardingWindow(Widget):
   def __init__(self, completed_callback: Callable[[], None]):
     super().__init__()
     self._completed_callback = completed_callback
+    # [sangw 수정] 약관 동의 자동 처리 + sunnylink는 사용 안 함(거절)으로 고정
+    ui_state.params.put("HasAcceptedTerms", terms_version, block=True)
+    ui_state.params.put("HasAcceptedTermsSP", terms_version_sp, block=True)
+    ui_state.params.put_bool("SunnylinkEnabled", False)
+    ui_state.params.put("CompletedSunnylinkConsentVersion", sunnylink_consent_declined)
     self._accepted_terms: bool = (ui_state.params.get("HasAcceptedTerms") == terms_version and
                                   ui_state.params.get("HasAcceptedTermsSP") == terms_version_sp)
     self._training_done: bool = ui_state.params.get("CompletedTrainingVersion") == training_version
