@@ -28,6 +28,11 @@ MADS_UNIFIED_ENGAGEMENT_MODE_BASE_DESC = "{engage}<br><h4>{note}</h4>".format(
   note=tr("Note: Once lateral control is engaged via UEM, it will remain engaged until it is manually disabled via the MADS button or car shut off."),
 )
 
+# [sangw 수정] 속도 버튼 짧게/길게 증가폭 교체 옵션
+SWAP_CRUISE_INCREMENTS_DESC = tr("Swap the set speed step of the speed buttons: a short press changes the set speed by 5 " +
+                                 "and holding the button changes it by 1 per step. " +
+                                 "Applies when sunnypilot controls the set speed (openpilot longitudinal).")
+
 STATUS_CHECK_COMPATIBILITY = tr("Start the vehicle to check vehicle compatibility.")
 DEFAULT_TO_OFF = tr("This feature defaults to OFF, and does not allow selection due to vehicle limitations.")
 DEFAULT_TO_ON = tr("This feature defaults to ON, and does not allow selection due to vehicle limitations.")
@@ -53,6 +58,12 @@ class MadsSettingsLayout(Widget):
       description=MADS_UNIFIED_ENGAGEMENT_MODE_BASE_DESC,
       param="MadsUnifiedEngagementMode"
     )
+    # [sangw 수정]
+    self._swap_cruise_increments_toggle = toggle_item_sp(
+      title=lambda: tr("Swap Short/Long Press Set Speed"),
+      description=SWAP_CRUISE_INCREMENTS_DESC,
+      param="SwapCruiseButtonIncrements",
+    )
     self._steering_mode = multiple_button_item_sp(
       param="MadsSteeringMode",
       title=lambda: tr("Steering Mode on Brake Pedal"),
@@ -66,6 +77,7 @@ class MadsSettingsLayout(Widget):
     self.items = [
       self._main_cruise_toggle,
       self._unified_engagement_toggle,
+      self._swap_cruise_increments_toggle,
       self._steering_mode,
     ]
 

@@ -189,6 +189,8 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"MadsMainCruiseAllowed", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"MadsSteeringMode", {PERSISTENT | BACKUP, INT, "0"}},
     {"MadsUnifiedEngagementMode", {PERSISTENT | BACKUP, BOOL, "1"}},
+    // [sangw 수정] 속도 버튼 짧게/길게 증가폭 교체
+    {"SwapCruiseButtonIncrements", {PERSISTENT | BACKUP, BOOL, "0"}},
 
     // Model Manager params
     {"ModelManager_ActiveBundle", {PERSISTENT, JSON}},

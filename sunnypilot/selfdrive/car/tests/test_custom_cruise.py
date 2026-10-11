@@ -24,6 +24,7 @@ class TestCustomAccIncrements(TestVCruiseHelper):
     self.params.put_bool("CustomAccIncrementsEnabled", False, block=True)
     self.params.put("CustomAccShortPressIncrement", 1, block=True)
     self.params.put("CustomAccLongPressIncrement", 5, block=True)
+    self.params.put_bool("SwapCruiseButtonIncrements", False, block=True)
     self.v_cruise_helper.read_custom_set_speed_params()
 
   def press_button_short(self, button_type: car.CarState.ButtonEvent.Type) -> None:
@@ -55,6 +56,21 @@ class TestCustomAccIncrements(TestVCruiseHelper):
     self.params.put("CustomAccShortPressIncrement", short_inc, block=True)
     self.params.put("CustomAccLongPressIncrement", long_inc, block=True)
     self.v_cruise_helper.read_custom_set_speed_params()
+
+  # [sangw 수정]
+  def test_swap_press_increments(self):
+    """Short press changes by 5 (snapped to a multiple of 5), long press by 1 per step"""
+    self.params.put_bool("SwapCruiseButtonIncrements", True, block=True)
+    self.v_cruise_helper.read_custom_set_speed_params()
+    self.enable(V_CRUISE_INITIAL * CV.KPH_TO_MS, False, False)
+
+    self.v_cruise_helper.v_cruise_kph = 42
+    self.press_button_short(ButtonType.accelCruise)
+    assert self.v_cruise_helper.v_cruise_kph == 45
+
+    self.v_cruise_helper.v_cruise_kph = 42
+    self.press_button_long(ButtonType.accelCruise)
+    assert self.v_cruise_helper.v_cruise_kph == 43
 
   def test_default_behavior_when_disabled(self):
     """Test that default increments are used when custom ACC is disabled"""

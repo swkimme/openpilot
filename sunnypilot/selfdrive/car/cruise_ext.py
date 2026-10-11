@@ -51,6 +51,7 @@ class VCruiseHelperSP:
     self.custom_acc_enabled = self.params.get_bool("CustomAccIncrementsEnabled")
     self.short_increment = self.params.get("CustomAccShortPressIncrement", return_default=True)
     self.long_increment = self.params.get("CustomAccLongPressIncrement", return_default=True)
+    self.swap_press_increments = self.params.get_bool("SwapCruiseButtonIncrements")  # [sangw 수정]
 
     self.enable_button_timers = CRUISE_BUTTON_TIMER
 
@@ -68,8 +69,14 @@ class VCruiseHelperSP:
     self.custom_acc_enabled = self.params.get_bool("CustomAccIncrementsEnabled")
     self.short_increment = self.params.get("CustomAccShortPressIncrement", return_default=True)
     self.long_increment = self.params.get("CustomAccLongPressIncrement", return_default=True)
+    self.swap_press_increments = self.params.get_bool("SwapCruiseButtonIncrements")  # [sangw 수정]
 
   def update_v_cruise_delta(self, long_press: bool, v_cruise_delta: float) -> tuple[bool, float]:
+    # [sangw 수정] 짧게/길게 누름 증가폭 교체 옵션 (SwapCruiseButtonIncrements)
+    # Swap: short press uses the long-press step (5), held-button repeats use the short-press step (1)
+    if self.swap_press_increments:
+      long_press = not long_press
+
     if not self.custom_acc_enabled:
       v_cruise_delta = v_cruise_delta * (5 if long_press else 1)
       return long_press, v_cruise_delta

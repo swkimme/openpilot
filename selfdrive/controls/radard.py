@@ -160,11 +160,15 @@ def get_RadarState_from_vision(lead_msg: capnp._DynamicStructReader, v_ego: floa
   }
 
 
+# [sangw 수정] 앞차 인식 확률 기준 0.5 → 0.4. 끼어드는 차를 더 일찍 앞차로 잡음(대신 오인식 감속 가능성 증가).
+LEAD_PROB_MIN = 0.4
+
+
 def get_lead(v_ego: float, ready: bool, tracks: dict[int, Track], lead_msg: capnp._DynamicStructReader,
              model_v_ego: float, lead_prob: float, CP: structs.CarParams, CP_SP: structs.CarParamsSP,
              low_speed_override: bool = True) -> dict[str, Any]:
   # Determine leads, this is where the essential logic happens
-  if len(tracks) > 0 and ready and lead_prob > .5:
+  if len(tracks) > 0 and ready and lead_prob > LEAD_PROB_MIN:
     track = match_vision_to_track(v_ego, lead_msg, tracks)
   else:
     track = None
@@ -173,7 +177,7 @@ def get_lead(v_ego: float, ready: bool, tracks: dict[int, Track], lead_msg: capn
   if track is not None:
     lead_dict = track.get_RadarState(lead_prob)
     lead_dict = get_custom_yrel(CP, CP_SP, lead_dict, lead_msg)
-  elif (track is None) and ready and (lead_prob > .5):
+  elif (track is None) and ready and (lead_prob > LEAD_PROB_MIN):
     lead_dict = get_RadarState_from_vision(lead_msg, v_ego, model_v_ego, lead_prob)
 
   if low_speed_override:

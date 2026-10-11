@@ -27,6 +27,12 @@ FILTER_DT = 1. / (micd.SAMPLE_RATE / micd.FFT_SAMPLES)
 AMBIENT_DB = 24 # DB where MIN_VOLUME is applied
 DB_SCALE = 30 # AMBIENT_DB + DB_SCALE is where MAX_VOLUME is applied
 
+# [sangw 수정] "앞을 보세요(promptDistracted)" 경고음 볼륨을 1/2로
+DISTRACTED_PROMPT_VOLUME_SCALE = 0.5
+# [sangw 수정] 운전자 모니터링 3단계("DISENGAGE IMMEDIATELY" + Driver Distracted/Unresponsive) 경고음 볼륨을 0.7배로.
+# warningImmediate 소리는 충돌 경고 등과 공유하므로 운전자 모니터링 알림일 때만 적용한다.
+DM_CRITICAL_VOLUME_SCALE = 0.7
+
 VOLUME_BASE = 20
 if HARDWARE.get_device_type() == "tizi":
   AMBIENT_DB = 30
@@ -81,6 +87,7 @@ class Soundd(QuietMode):
 
     self.current_alert = AudibleAlert.none
     self.current_volume = MIN_VOLUME
+    self.dm_critical = False  # [sangw 수정]
     self.current_sound_frame = 0
 
     self.ramp_start_volume = MIN_VOLUME
@@ -124,7 +131,12 @@ class Soundd(QuietMode):
         written_frames += frames_to_write
         self.current_sound_frame += frames_to_write
 
-    return ret * self.current_volume
+    scale = 1.0  # [sangw 수정]
+    if self.current_alert == AudibleAlert.promptDistracted:
+      scale = DISTRACTED_PROMPT_VOLUME_SCALE
+    elif self.current_alert == AudibleAlert.warningImmediate and self.dm_critical:
+      scale = DM_CRITICAL_VOLUME_SCALE
+    return ret * self.current_volume * scale
 
   def callback(self, data_out: np.ndarray, frames: int, time, status) -> None:
     if status:
@@ -143,6 +155,8 @@ class Soundd(QuietMode):
   def get_audible_alert(self, sm):
     if sm.updated['selfdriveState']:
       new_alert = sm['selfdriveState'].alertSound.raw
+      ss = sm['selfdriveState']  # [sangw 수정]
+      self.dm_critical = ss.alertText1 == "DISENGAGE IMMEDIATELY" and ss.alertText2 in ("Driver Distracted", "Driver Unresponsive")
       self.update_alert(new_alert)
     elif check_selfdrive_timeout_alert(sm):
       self.update_alert(AudibleAlert.warningImmediate)
