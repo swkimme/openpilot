@@ -226,7 +226,8 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"BackupManager_RestoreVersion", {PERSISTENT, STRING}},
 
     // sunnypilot car specific params
-    {"HyundaiLongitudinalTuning", {PERSISTENT | BACKUP, INT, "0"}},
+    // [sangw 수정] 현대 종방향 튜닝 기본 Dynamic (원래 0 = Off)
+    {"HyundaiLongitudinalTuning", {PERSISTENT | BACKUP, INT, "1"}},
     {"SubaruStopAndGo", {PERSISTENT | BACKUP, BOOL, "0"}},
     {"SubaruStopAndGoManualParkingBrake", {PERSISTENT | BACKUP, BOOL, "0"}},
     {"TeslaCoopSteering", {PERSISTENT | BACKUP, BOOL, "0"}},
