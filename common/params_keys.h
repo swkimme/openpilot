@@ -243,7 +243,8 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"LagdToggle", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"LagdToggleDelay", {PERSISTENT | BACKUP, FLOAT, "0.2"}},
     {"LagdValueCache", {PERSISTENT, FLOAT, "0.2"}},
-    {"LaneTurnDesire", {PERSISTENT | BACKUP, BOOL, "0"}},
+    // [sangw 수정] 저속 교차로 회전 desire 기본 켜짐 (속도 기준 19 mph 그대로)
+    {"LaneTurnDesire", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"LaneTurnValue", {PERSISTENT | BACKUP, FLOAT, "19.0"}},
     {"PlanplusControl", {PERSISTENT | BACKUP, FLOAT, "1.0"}},
 
