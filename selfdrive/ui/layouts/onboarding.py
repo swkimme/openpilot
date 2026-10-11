@@ -178,6 +178,10 @@ class OnboardingWindow(Widget):
     super().__init__()
     self._accepted_terms: bool = ui_state.params.get("HasAcceptedTerms") == terms_version
     self._training_done: bool = ui_state.params.get("CompletedTrainingVersion") == training_version
+    # [sangw 수정] 튜토리얼(트레이닝 가이드) 건너뛰기: 완료한 것으로 처리
+    if not self._training_done:
+      ui_state.params.put("CompletedTrainingVersion", training_version, block=True)
+      self._training_done = True
 
     self._state = OnboardingState.TERMS if not self._accepted_terms else OnboardingState.ONBOARDING
 

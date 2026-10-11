@@ -346,6 +346,10 @@ class OnboardingWindow(Widget):
     self._accepted_terms: bool = (ui_state.params.get("HasAcceptedTerms") == terms_version and
                                   ui_state.params.get("HasAcceptedTermsSP") == terms_version_sp)
     self._training_done: bool = ui_state.params.get("CompletedTrainingVersion") == training_version
+    # [sangw 수정] 튜토리얼(트레이닝 가이드) 건너뛰기: 완료한 것으로 처리
+    if not self._training_done:
+      ui_state.params.put("CompletedTrainingVersion", training_version, block=True)
+      self._training_done = True
     self._sunnylink_consent_done: bool = ui_state.params.get("CompletedSunnylinkConsentVersion") in {
       sunnylink_consent_version, sunnylink_consent_declined
     }
