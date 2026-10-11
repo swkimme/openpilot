@@ -176,14 +176,14 @@ class DeclinePage(Widget):
 class OnboardingWindow(Widget):
   def __init__(self):
     super().__init__()
-    # [sangw 수정] 약관 동의 자동 처리 + sunnylink는 사용 안 함(거절)으로 고정
+    # [sangw 수정, docs/SANGW_MODS.md] 약관 동의 자동 처리 + sunnylink는 사용 안 함(거절)으로 고정
     ui_state.params.put("HasAcceptedTerms", terms_version, block=True)
     ui_state.params.put("HasAcceptedTermsSP", terms_version_sp, block=True)
     ui_state.params.put_bool("SunnylinkEnabled", False)
     ui_state.params.put("CompletedSunnylinkConsentVersion", sunnylink_consent_declined)
     self._accepted_terms: bool = ui_state.params.get("HasAcceptedTerms") == terms_version
     self._training_done: bool = ui_state.params.get("CompletedTrainingVersion") == training_version
-    # [sangw 수정] 튜토리얼(트레이닝 가이드) 건너뛰기: 완료한 것으로 처리
+    # [sangw 수정, docs/SANGW_MODS.md] 튜토리얼(트레이닝 가이드) 건너뛰기: 완료한 것으로 처리
     if not self._training_done:
       ui_state.params.put("CompletedTrainingVersion", training_version, block=True)
       self._training_done = True

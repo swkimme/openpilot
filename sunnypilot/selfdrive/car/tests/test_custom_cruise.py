@@ -57,7 +57,7 @@ class TestCustomAccIncrements(TestVCruiseHelper):
     self.params.put("CustomAccLongPressIncrement", long_inc, block=True)
     self.v_cruise_helper.read_custom_set_speed_params()
 
-  # [sangw 수정]
+  # [sangw 수정, docs/SANGW_MODS.md]
   def test_swap_press_increments(self):
     """Short press changes by 5 (snapped to a multiple of 5), long press by 1 per step"""
     self.params.put_bool("SwapCruiseButtonIncrements", True, block=True)

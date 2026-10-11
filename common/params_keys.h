@@ -37,9 +37,9 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"DoShutdown", {CLEAR_ON_MANAGER_START, BOOL}},
     {"DoUninstall", {CLEAR_ON_MANAGER_START, BOOL}},
     {"DriverTooDistracted", {CLEAR_ON_MANAGER_START | CLEAR_ON_IGNITION_ON, BOOL}},
-    // [sangw 수정] openpilot 종방향 제어(알파) 기본 켜짐
+    // [sangw 수정, docs/SANGW_MODS.md] openpilot 종방향 제어(알파) 기본 켜짐
     {"AlphaLongitudinalEnabled", {PERSISTENT | DEVELOPMENT_ONLY | BACKUP, BOOL, "1"}},
-    // [sangw 수정] 실험 모드 기본 켜짐 + 확인 팝업 건너뜀
+    // [sangw 수정, docs/SANGW_MODS.md] 실험 모드 기본 켜짐 + 확인 팝업 건너뜀
     {"ExperimentalMode", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"ExperimentalModeConfirmed", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"FirmwareQueryDone", {CLEAR_ON_MANAGER_START | CLEAR_ON_ONROAD_TRANSITION, BOOL}},
@@ -138,9 +138,9 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
 
     // --- sunnypilot params --- //
     {"ApiCache_DriveStats", {PERSISTENT, JSON}},
-    // [sangw 수정] 사각지대에 차가 있으면 자동 차선 변경 지연 기본 켜짐
+    // [sangw 수정, docs/SANGW_MODS.md] 사각지대에 차가 있으면 자동 차선 변경 지연 기본 켜짐
     {"AutoLaneChangeBsmDelay", {PERSISTENT | BACKUP, BOOL, "1"}},
-    // [sangw 수정] 자동 차선 변경 기본값: 1초 타이머 (원래 0 = Nudge)
+    // [sangw 수정, docs/SANGW_MODS.md] 자동 차선 변경 기본값: 1초 타이머 (원래 0 = Nudge)
     {"AutoLaneChangeTimer", {PERSISTENT | BACKUP, INT, "3"}},
     {"BlinkerLateralReengageDelay", {PERSISTENT | BACKUP, INT, "0"}},  // seconds
     {"BlinkerMinLateralControlSpeed", {PERSISTENT | BACKUP, INT, "20"}},  // MPH or km/h
@@ -170,7 +170,7 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"IsReleaseSpBranch", {CLEAR_ON_MANAGER_START, BOOL}},
     {"LastGPSPositionLLK", {PERSISTENT, STRING}},
     {"LeadDepartAlert", {PERSISTENT | BACKUP, BOOL, "0"}},
-    // [sangw 수정] 시동 끈 뒤 기기 자동 종료 3시간 (원래 1800분 = 30시간)
+    // [sangw 수정, docs/SANGW_MODS.md] 시동 끈 뒤 기기 자동 종료 3시간 (원래 1800분 = 30시간)
     {"MaxTimeOffroad", {PERSISTENT | BACKUP, INT, "180"}},
     {"ModelRunnerTypeCache", {CLEAR_ON_ONROAD_TRANSITION, INT}},
     {"OffroadMode", {CLEAR_ON_MANAGER_START, BOOL}},
@@ -181,7 +181,7 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"OnroadScreenOffTimerMigrated", {PERSISTENT | BACKUP, STRING, "0.0"}},
     {"OnroadUploads", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"QuickBootToggle", {PERSISTENT | BACKUP, BOOL, "0"}},
-    // [sangw 수정] 콰이엇 모드 기본 켜짐
+    // [sangw 수정, docs/SANGW_MODS.md] 콰이엇 모드 기본 켜짐
     {"QuietMode", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"RainbowMode", {PERSISTENT | BACKUP, BOOL, "0"}},
     {"RocketFuel", {PERSISTENT | BACKUP, BOOL, "0"}},
@@ -195,7 +195,7 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"MadsMainCruiseAllowed", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"MadsSteeringMode", {PERSISTENT | BACKUP, INT, "0"}},
     {"MadsUnifiedEngagementMode", {PERSISTENT | BACKUP, BOOL, "1"}},
-    // [sangw 수정] 속도 버튼 짧게/길게 증가폭 교체
+    // [sangw 수정, docs/SANGW_MODS.md] 속도 버튼 짧게/길게 증가폭 교체
     {"SwapCruiseButtonIncrements", {PERSISTENT | BACKUP, BOOL, "0"}},
 
     // Model Manager params
@@ -207,7 +207,7 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"ModelManager_ModelsCache", {PERSISTENT | BACKUP, JSON}},
 
     // Neural Network Lateral Control
-    // [sangw 수정] NNLC 기본 켜짐 (아이오닉5 모델 데이터 있음)
+    // [sangw 수정, docs/SANGW_MODS.md] NNLC 기본 켜짐 (아이오닉5 모델 데이터 있음)
     {"NeuralNetworkLateralControl", {PERSISTENT | BACKUP, BOOL, "1"}},
 
     // sunnylink params
@@ -226,7 +226,7 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"BackupManager_RestoreVersion", {PERSISTENT, STRING}},
 
     // sunnypilot car specific params
-    // [sangw 수정] 현대 종방향 튜닝 기본 Dynamic (원래 0 = Off)
+    // [sangw 수정, docs/SANGW_MODS.md] 현대 종방향 튜닝 기본 Dynamic (원래 0 = Off)
     {"HyundaiLongitudinalTuning", {PERSISTENT | BACKUP, INT, "1"}},
     {"SubaruStopAndGo", {PERSISTENT | BACKUP, BOOL, "0"}},
     {"SubaruStopAndGoManualParkingBrake", {PERSISTENT | BACKUP, BOOL, "0"}},
@@ -234,7 +234,7 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"ToyotaEnforceStockLongitudinal", {PERSISTENT | BACKUP, BOOL, "0"}},
     {"ToyotaStopAndGoHack", {PERSISTENT | BACKUP, BOOL, "0"}},
 
-    // [sangw 수정] DEC(일반/실험 모드 자동 전환) 기본 켜짐
+    // [sangw 수정, docs/SANGW_MODS.md] DEC(일반/실험 모드 자동 전환) 기본 켜짐
     {"DynamicExperimentalControl", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"BlindSpot", {PERSISTENT | BACKUP, BOOL, "0"}},
 
@@ -243,7 +243,7 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"LagdToggle", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"LagdToggleDelay", {PERSISTENT | BACKUP, FLOAT, "0.2"}},
     {"LagdValueCache", {PERSISTENT, FLOAT, "0.2"}},
-    // [sangw 수정] 저속 교차로 회전 desire 기본 켜짐 (속도 기준 19 mph 그대로)
+    // [sangw 수정, docs/SANGW_MODS.md] 저속 교차로 회전 desire 기본 켜짐 (속도 기준 19 mph 그대로)
     {"LaneTurnDesire", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"LaneTurnValue", {PERSISTENT | BACKUP, FLOAT, "19.0"}},
     {"PlanplusControl", {PERSISTENT | BACKUP, FLOAT, "1.0"}},
@@ -278,7 +278,7 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     // Smart Cruise Control
     {"MapTargetVelocities", {CLEAR_ON_ONROAD_TRANSITION, STRING}},
     {"SmartCruiseControlMap", {PERSISTENT | BACKUP, BOOL, "0"}},
-    // [sangw 수정] 카메라 기반 커브 감속(SCC Vision) 기본 켜짐
+    // [sangw 수정, docs/SANGW_MODS.md] 카메라 기반 커브 감속(SCC Vision) 기본 켜짐
     {"SmartCruiseControlVision", {PERSISTENT | BACKUP, BOOL, "1"}},
 
     // Torque lateral control custom params

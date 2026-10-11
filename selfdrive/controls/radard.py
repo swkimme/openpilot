@@ -160,7 +160,7 @@ def get_RadarState_from_vision(lead_msg: capnp._DynamicStructReader, v_ego: floa
   }
 
 
-# [sangw 수정] 앞차 인식 확률 기준 0.5 → 0.4. 끼어드는 차를 더 일찍 앞차로 잡음(대신 오인식 감속 가능성 증가).
+# [sangw 수정, docs/SANGW_MODS.md] 앞차 인식 확률 기준 0.5 → 0.4. 끼어드는 차를 더 일찍 앞차로 잡음(대신 오인식 감속 가능성 증가).
 LEAD_PROB_MIN = 0.4
 
 

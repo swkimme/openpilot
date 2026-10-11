@@ -29,7 +29,7 @@ class DRIVER_MONITOR_SETTINGS:
     self._WHEELTOUCH_POLICY_ALERT_2_TIMEOUT = 24.
     self._WHEELTOUCH_POLICY_ALERT_3_TIMEOUT = 30.
     # https://cdn.euroncap.com/cars/assets/euro_ncap_protocol_safe_driving_driver_engagement_v11_a30e874152.pdf
-    # [sangw 수정] 앞을 보라는 경고가 너무 민감해서 10/20/30초로 늘림 (원래 3. / 5. / 11.)
+    # [sangw 수정, docs/SANGW_MODS.md] 앞을 보라는 경고가 너무 민감해서 10/20/30초로 늘림 (원래 3. / 5. / 11.)
     self._VISION_POLICY_ALERT_1_TIMEOUT = 10.
     self._VISION_POLICY_ALERT_2_TIMEOUT = 20.
     self._VISION_POLICY_ALERT_3_TIMEOUT = 30.
@@ -44,9 +44,9 @@ class DRIVER_MONITOR_SETTINGS:
     self._EYE_THRESHOLD = 0.65
     self._SG_THRESHOLD = 0.9
     self._BLINK_THRESHOLD = 0.865
-    # [sangw 수정] 폰 들고 있는 감지가 너무 민감해서 기준을 0.5 → 0.8로 올림 (높을수록 덜 민감)
+    # [sangw 수정, docs/SANGW_MODS.md] 폰 들고 있는 감지가 너무 민감해서 기준을 0.5 → 0.8로 올림 (높을수록 덜 민감)
     self._PHONE_THRESH = 0.8
-    # [sangw 수정] 고개 각도 기준을 약 15% 넓힘, slack도 같은 비율 (원래 pitch 0.3133/0.3237, yaw 0.4020/0.5042)
+    # [sangw 수정, docs/SANGW_MODS.md] 고개 각도 기준을 약 15% 넓힘, slack도 같은 비율 (원래 pitch 0.3133/0.3237, yaw 0.4020/0.5042)
     self._POSE_PITCH_THRESHOLD = 0.36
     self._POSE_PITCH_THRESHOLD_SLACK = 0.372
     self._POSE_PITCH_THRESHOLD_STRICT = self._POSE_PITCH_THRESHOLD

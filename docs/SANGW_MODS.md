@@ -1,0 +1,67 @@
+# sangw 수정 사항 (아이오닉5용)
+
+> 기준: `release-tizi` (sunnypilot v2026.002.002, 커밋 `6a17f75`) 위의 `ioniq5-mod` 브랜치.
+> 코드에서 `[sangw 수정]` 주석이 달린 곳이 전부 이 문서의 항목이야. 기기에 이미 저장된 설정값이 있으면 기본값보다 그 값이 우선이야.
+> 대부분 Windows에서 문법 검사만 했고 기기에서는 아직 실행해 보지 못했어. 타 보고 확인할 것.
+
+## 1. 속도 버튼 짧게/길게 동작 교체 (신규 옵션)
+- 짧게 누르면 5씩(5의 배수로 맞춤), 길게 누르면 1씩. 켜짐/꺼짐은 MADS 설정의 "Swap Short/Long Press Set Speed".
+- 파일: `sunnypilot/selfdrive/car/cruise_ext.py` (`swap_press_increments`), `selfdrive/ui/sunnypilot/layouts/settings/steering_sub_layouts/mads_settings.py`, `common/params_keys.h` (`SwapCruiseButtonIncrements`, 기본 꺼짐), 테스트 `sunnypilot/selfdrive/car/tests/test_custom_cruise.py`.
+- 적용 조건: openpilot이 설정 속도를 직접 관리할 때(종방향 제어 켬)만 작동. 순정 크루즈 모드에서는 효과 없음.
+- Custom ACC 증가폭과 같이 켜면 정해 둔 짧게/길게 값이 서로 바뀜.
+
+## 2. 운전자 모니터링 완화 (`selfdrive/monitoring/policy.py`)
+| 항목 | 원래 | 지금 |
+|---|---|---|
+| 앞을 보라는 경고 1/2/3단계 시간 (`_VISION_POLICY_ALERT_*_TIMEOUT`) | 3 / 5 / 11초 | 10 / 20 / 30초 |
+| 폰 감지 기준 (`_PHONE_THRESH`) | 0.5 | 0.8 |
+| 고개 위아래 (`_POSE_PITCH_THRESHOLD` / `_SLACK`) | 0.3133 / 0.3237 | 0.36 / 0.372 |
+| 고개 좌우 (`_POSE_YAW_THRESHOLD` / `_SLACK`) | 0.4020 / 0.5042 | 0.462 / 0.58 |
+
+- **위험:** 3단계(해제)가 30초라 고속에서 약 800m 이상 앞을 안 봐도 해제되지 않음. 폰 감지와 고개 각도를 완화한 만큼 실제 주의 분산도 늦게 잡힘. 필요하면 3단계를 11초 근처로 되돌릴 것.
+
+## 3. 경고음 볼륨 (`selfdrive/ui/soundd.py`)
+- "앞을 보세요" (`promptDistracted`): 0.5배.
+- 운전자 모니터링 3단계 `DISENGAGE IMMEDIATELY` (부제가 `Driver Distracted`/`Driver Unresponsive`일 때만): 0.7배. 충돌 경고 등 다른 `warningImmediate`는 그대로.
+- 영어 알림 문구 비교에 의존하므로 문구가 바뀌면 이 조건이 안 맞음.
+
+## 4. 앞차 끼어들기 (`selfdrive/controls/radard.py`)
+- 앞차 인식 확률 기준 `LEAD_PROB_MIN`: 0.5 → 0.4. 끼어드는 차를 더 일찍 앞차로 잡음. 대신 오인식 감속이 늘 수 있음.
+
+## 5. 감속 거동 (`selfdrive/controls/lib/longitudinal_mpc_lib/long_mpc.py`)
+- `COMFORT_BRAKE`: 2.5 → 2.2. 더 일찍, 부드럽게 감속(앞차 거리 계산에도 반영되어 목표 거리가 조금 늘어남).
+
+## 6. 온보딩 건너뛰기
+- 튜토리얼(트레이닝 가이드): 완료로 처리.
+- 약관 동의 (`HasAcceptedTerms`, `HasAcceptedTermsSP`): 자동 저장.
+- sunnylink: 사용 안 함으로 고정 (`SunnylinkEnabled=False`, 거절 기록). 설정에서 켜도 재부팅하면 다시 꺼짐.
+- 파일: `selfdrive/ui/layouts/onboarding.py`(comma 3X), `selfdrive/ui/mici/layouts/onboarding.py`(mici).
+
+## 7. 기본값 변경 (`common/params_keys.h`)
+| 설정 | 원래 | 지금 |
+|---|---|---|
+| `ExperimentalMode` / `ExperimentalModeConfirmed` | 꺼짐 | 켜짐 (확인 팝업 생략) |
+| `AlphaLongitudinalEnabled` (openpilot 종방향 제어) | 꺼짐 | 켜짐 |
+| `AutoLaneChangeTimer` | 0 (Nudge) | 3 (1초 타이머) |
+| `AutoLaneChangeBsmDelay` | 꺼짐 | 켜짐 |
+| `NeuralNetworkLateralControl` (NNLC) | 꺼짐 | 켜짐 |
+| `QuietMode` | 꺼짐 | 켜짐 |
+| `MaxTimeOffroad` | 1800분 (30h) | 180분 (3h) |
+| `SmartCruiseControlVision` | 꺼짐 | 켜짐 (`SmartCruiseControlMap`은 꺼짐 그대로) |
+| `HyundaiLongitudinalTuning` | 0 (Off) | 1 (Dynamic) |
+| `DynamicExperimentalControl` (DEC) | 꺼짐 | 켜짐 |
+| `LaneTurnDesire` | 꺼짐 | 켜짐 (속도 기준 `LaneTurnValue` 19 mph 그대로) |
+
+메모:
+- 종방향 제어(`AlphaLongitudinalEnabled`)는 개발자용 설정이고 release 빌드에서는 화면 토글이 숨겨짐. 기본값으로만 작동.
+- NNLC는 차를 한 번 인식해야 화면 토글이 눌림. 코드는 차량 시작 시 기본값을 읽음.
+- 사각지대 지연은 차에 사각지대 경고 장치(BCW)가 있을 때만 효과.
+- DEC가 켜져 있으면 실험 모드 초기 크루즈 속도가 105가 아니라 일반 모드 값(40)으로 시작.
+- ICBM은 종방향 제어가 켜져 있으면 코드가 설정을 지워서 쓸 수 없음.
+
+## 8. 되돌리는 법
+- 항목별: 위 표의 "원래" 값으로 `params_keys.h`를 되돌리거나, 해당 `[sangw 수정]` 주석 구간만 지움.
+- 전부: `git diff 6a17f75` 로 변경을 확인하고 `git checkout release-tizi`.
+
+## 9. 저장소
+- 작업 브랜치: `ioniq5-mod` (포크 `swkimme/sunnypilot`, 원격 이름 `fork`). `origin`은 sunnypilot 공식 저장소라 푸시 불가.
