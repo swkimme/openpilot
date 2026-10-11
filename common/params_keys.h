@@ -170,7 +170,8 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"IsReleaseSpBranch", {CLEAR_ON_MANAGER_START, BOOL}},
     {"LastGPSPositionLLK", {PERSISTENT, STRING}},
     {"LeadDepartAlert", {PERSISTENT | BACKUP, BOOL, "0"}},
-    {"MaxTimeOffroad", {PERSISTENT | BACKUP, INT, "1800"}},
+    // [sangw 수정] 시동 끈 뒤 기기 자동 종료 10시간 (원래 1800분 = 30시간)
+    {"MaxTimeOffroad", {PERSISTENT | BACKUP, INT, "600"}},
     {"ModelRunnerTypeCache", {CLEAR_ON_ONROAD_TRANSITION, INT}},
     {"OffroadMode", {CLEAR_ON_MANAGER_START, BOOL}},
     {"Offroad_TiciSupport", {CLEAR_ON_MANAGER_START, JSON}},
@@ -180,7 +181,8 @@ inline static std::unordered_map<std::string, ParamKeyAttributes> keys = {
     {"OnroadScreenOffTimerMigrated", {PERSISTENT | BACKUP, STRING, "0.0"}},
     {"OnroadUploads", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"QuickBootToggle", {PERSISTENT | BACKUP, BOOL, "0"}},
-    {"QuietMode", {PERSISTENT | BACKUP, BOOL, "0"}},
+    // [sangw 수정] 콰이엇 모드 기본 켜짐
+    {"QuietMode", {PERSISTENT | BACKUP, BOOL, "1"}},
     {"RainbowMode", {PERSISTENT | BACKUP, BOOL, "0"}},
     {"RocketFuel", {PERSISTENT | BACKUP, BOOL, "0"}},
     {"ShowAdvancedControls", {PERSISTENT | BACKUP, BOOL, "0"}},
