@@ -36,7 +36,8 @@
 ## 6. 온보딩 건너뛰기
 - 튜토리얼(트레이닝 가이드): 완료로 처리.
 - 약관 동의 (`HasAcceptedTerms`, `HasAcceptedTermsSP`): 자동 저장.
-- sunnylink: 사용 안 함으로 고정 (`SunnylinkEnabled=False`, 거절 기록). 설정에서 켜도 재부팅하면 다시 꺼짐.
+- sunnylink: 사용 안 함으로 고정 (`SunnylinkEnabled=False`, 거절 기록). 설정 메뉴에서도 숨김(`selfdrive/ui/sunnypilot/layouts/settings/settings.py`).
+- 첫 시작 sunnylink 동의 팝업: 거절 기록을 비동기로 써서 바로 다음 줄이 못 읽고 팝업이 떴던 것 → `block=True`로 씀(2026-10-18).
 - 단위 km/h(`IsMetric`): 아직 정한 적 없을 때만 켬. 설정에서 바꾼 값은 유지. 미리 빌드된 라이브러리에선 `params_keys.h` 기본값이 안 먹어서 온보딩 코드(파이썬)에서 씀.
 - 파일: `selfdrive/ui/layouts/onboarding.py`(comma 3X), `selfdrive/ui/mici/layouts/onboarding.py`(mici).
 

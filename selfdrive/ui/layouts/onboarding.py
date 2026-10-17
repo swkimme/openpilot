@@ -179,8 +179,9 @@ class OnboardingWindow(Widget):
     # [sangw 수정, docs/SANGW_MODS.md] 약관 동의 자동 처리 + sunnylink는 사용 안 함(거절)으로 고정
     ui_state.params.put("HasAcceptedTerms", terms_version, block=True)
     ui_state.params.put("HasAcceptedTermsSP", terms_version_sp, block=True)
-    ui_state.params.put_bool("SunnylinkEnabled", False)
-    ui_state.params.put("CompletedSunnylinkConsentVersion", sunnylink_consent_declined)
+    # block=True: 바로 아래에서 다시 읽으므로 비동기로 쓰면 sunnylink 동의 팝업이 뜸
+    ui_state.params.put_bool("SunnylinkEnabled", False, block=True)
+    ui_state.params.put("CompletedSunnylinkConsentVersion", sunnylink_consent_declined, block=True)
     # [sangw 수정, docs/SANGW_MODS.md] 단위 기본값 km/h: 아직 안 정했을 때만 (설정에서 바꾼 값은 그대로)
     if ui_state.params.get("IsMetric") is None:
       ui_state.params.put_bool("IsMetric", True)
