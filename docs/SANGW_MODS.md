@@ -59,6 +59,7 @@
 | `CustomAccIncrementsEnabled` / 짧게 / 길게 | 꺼짐 / 1 / 5 | 켜짐 / 5 / 1 (속도 버튼 짧게 5씩, 길게 1씩 — §1 대신 기존 설정 사용) |
 
 메모:
+- Custom ACC 토글은 주행 중에도 바꿀 수 있게 풂(`selfdrive/ui/sunnypilot/layouts/settings/cruise.py`, 원래 시동 꺼짐에서만). 크루즈 쪽이 0.1초마다 다시 읽어 바로 반영 — 운전 중에 바꾸면 버튼 한 번에 오르는 폭이 즉시 달라짐.
 - 종방향 제어(`AlphaLongitudinalEnabled`)는 설정 → Developer → "sunnypilot Longitudinal Control (Alpha)". 이게 꺼져 있으면 실험 모드(`ExperimentalMode`)가 켜지지 않고 부팅 때 지워짐.
 - NNLC는 차를 한 번 인식해야 화면 토글이 눌림. 코드는 차량 시작 시 기본값을 읽음.
 - 사각지대 지연은 차에 사각지대 경고 장치(BCW)가 있을 때만 효과.

@@ -143,7 +143,8 @@ class CruiseLayout(Widget):
           self.icbm_toggle.show_description(True)
 
       if has_long or has_icbm:
-        self.custom_acc_toggle.action_item.set_enabled(((has_long and not ui_state.CP.pcmCruise) or has_icbm) and ui_state.is_offroad())
+        # [sangw 수정, docs/SANGW_MODS.md] 주행 중에도 바꿀 수 있게 (원래 시동 꺼짐에서만). card가 0.1초마다 다시 읽어 바로 반영됨
+        self.custom_acc_toggle.action_item.set_enabled((has_long and not ui_state.CP.pcmCruise) or has_icbm)
         self.dec_toggle.action_item.set_enabled(has_long)
         self.scc_v_toggle.action_item.set_enabled(True)
         self.scc_m_toggle.action_item.set_enabled(True)
