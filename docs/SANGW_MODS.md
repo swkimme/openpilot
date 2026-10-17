@@ -42,6 +42,7 @@
 ## 7. 기본값 변경 (`system/manager/manager.py` `SANGW_DEFAULTS`, `common/params_keys.h`)
 - 실제로 적용하는 곳은 `manager.py`의 `SANGW_DEFAULTS`. 미리 빌드된 라이브러리에선 `params_keys.h` 기본값이 안 먹고(2026-10-17 QuietMode·실험 모드가 꺼진 채 설치됨), 부팅 때 옛 기본값이 먼저 써지기 때문.
 - 부팅 때 `SANGW_DEFAULTS_VERSION`이 `/data/sangw_defaults_version`과 다르면 표 값을 한 번 덮어씀 → 그 뒤 설정 화면에서 바꾼 값은 유지. 값을 고치면 두 파일을 같이 고치고 VERSION을 올릴 것.
+- **차를 한 번 인식한 뒤에만 씀.** 차 정보(`CarParamsPersistent`)가 없으면 UI가 차 따라 다른 설정(종방향·실험 모드·DEC·NNLC·SCC-V·Custom ACC)을 지움. 그래서 새로 설치하면 첫 시동 → 재부팅(다음 시동)부터 적용, 종방향은 그다음 차 연결 때 켜짐.
 | 설정 | 원래 | 지금 |
 |---|---|---|
 | `ExperimentalMode` / `ExperimentalModeConfirmed` | 꺼짐 | 켜짐 (확인 팝업 생략) |
@@ -55,6 +56,7 @@
 | `HyundaiLongitudinalTuning` | 0 (Off) | 1 (Dynamic) |
 | `DynamicExperimentalControl` (DEC) | 꺼짐 | 켜짐 |
 | `LaneTurnDesire` | 꺼짐 | 켜짐 (속도 기준 `LaneTurnValue` 19 mph 그대로) |
+| `CustomAccIncrementsEnabled` / 짧게 / 길게 | 꺼짐 / 1 / 5 | 켜짐 / 5 / 1 (속도 버튼 짧게 5씩, 길게 1씩 — §1 대신 기존 설정 사용) |
 
 메모:
 - 종방향 제어(`AlphaLongitudinalEnabled`)는 설정 → Developer → "sunnypilot Longitudinal Control (Alpha)". 이게 꺼져 있으면 실험 모드(`ExperimentalMode`)가 켜지지 않고 부팅 때 지워짐.

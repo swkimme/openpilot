@@ -26,7 +26,7 @@ from openpilot.sunnypilot.system.params_migration import run_migration
 
 # [sangw 수정, docs/SANGW_MODS.md §7] 기본값 바꾸기. params_keys.h 기본값은 미리 빌드된 라이브러리(prebuilt)에선 안 먹고
 # 아래 루프가 옛 기본값을 먼저 써 버리므로, 파이썬에서 한 번 덮어쓴다. 값을 바꾸거나 키를 늘리면 VERSION을 올릴 것.
-SANGW_DEFAULTS_VERSION = "1"
+SANGW_DEFAULTS_VERSION = "2"
 SANGW_DEFAULTS: dict[str, bool | int] = {
   "AlphaLongitudinalEnabled": True,
   "ExperimentalMode": True,
@@ -41,11 +41,18 @@ SANGW_DEFAULTS: dict[str, bool | int] = {
   "DynamicExperimentalControl": True,
   "LaneTurnDesire": True,
   "IsMetric": True,
+  # 속도 버튼: 짧게 5, 길게 1 (기존 Custom ACC 설정 사용)
+  "CustomAccIncrementsEnabled": True,
+  "CustomAccShortPressIncrement": 5,
+  "CustomAccLongPressIncrement": 1,
 }
 
 
 def apply_sangw_defaults(params: Params) -> None:
-  # 버전마다 한 번만 씀 → 그 뒤 설정 화면에서 바꾼 값은 유지
+  # 버전마다 한 번만 씀 → 그 뒤 설정 화면에서 바꾼 값은 유지.
+  # 차를 한 번 인식한 뒤(CarParamsPersistent)에만 씀: 차 정보가 없으면 UI가 종방향·실험 모드·NNLC 등을 지워 버림
+  if params.get("CarParamsPersistent") is None:
+    return
   marker = os.path.join(Paths.comma_home() if PC else "/data", "sangw_defaults_version")
   try:
     with open(marker) as f:
