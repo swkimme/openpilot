@@ -65,3 +65,25 @@
 
 ## 9. 저장소
 - 작업 브랜치: `ioniq5-mod` (포크 `swkimme/sunnypilot`, 원격 이름 `fork`). `origin`은 sunnypilot 공식 저장소라 푸시 불가.
+- 설치용 사본: 같은 브랜치를 `swkimme/openpilot`에도 둠. `installer.comma.ai/<사용자>/<브랜치>`는 `<사용자>/openpilot` 저장소만 찾기 때문.
+- 고친 뒤엔 두 곳 다 푸시:
+  ```
+  git push fork ioniq5-mod
+  git push https://github.com/swkimme/openpilot.git ioniq5-mod
+  ```
+
+## 10. 기기에 설치
+1. 기기 설정 → 소프트웨어 → 제거(Uninstall).
+2. 재부팅 후 "Custom Software" → `installer.comma.ai/swkimme/ioniq5-mod` 입력 → 설치 끝날 때까지 대기.
+3. 첫 시동 후 확인: 온보딩 생략, 속도 버튼 교체, 경고 민감도, 아래 「주의」의 기본값.
+
+SSH로 바꾸는 법(설치 화면 없이): 설정 → 개발자 → SSH 켜고 GitHub 사용자 `swkimme` 등록 →
+```
+ssh comma@<기기IP>
+cd /data/openpilot
+git remote add fork https://github.com/swkimme/sunnypilot.git
+git fetch fork ioniq5-mod && git checkout -B ioniq5-mod fork/ioniq5-mod
+sudo reboot
+```
+
+**주의 — 기본값 변경(`common/params_keys.h`)은 적용 안 될 수 있음.** release 브랜치라 미리 빌드된 `.so`와 `prebuilt` 파일이 들어 있어 기기가 다시 빌드하지 않음. 그래서 C++에 들어간 기본값(DEC·LaneTurnDesire·HyundaiLongitudinalTuning·MaxTimeOffroad 등)은 옛 값 그대로일 가능성이 큼 — 설치 후 설정 화면에서 직접 켤 것. 파이썬 수정(경고·온보딩·사운드·크루즈·radard)은 그대로 적용됨. 종방향 제어(`AlphaLongitudinalEnabled`)는 화면 토글이 없어 이 방법으론 못 켬 — 확실히 하려면 기기에서 `prebuilt`를 지우고 다시 빌드해야 하는데 release 브랜치에서 빌드되는지는 미확인.
