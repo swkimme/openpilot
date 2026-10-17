@@ -26,12 +26,11 @@ from openpilot.sunnypilot.system.params_migration import run_migration
 
 # [sangw 수정, docs/SANGW_MODS.md §7] 기본값 바꾸기. params_keys.h 기본값은 미리 빌드된 라이브러리(prebuilt)에선 안 먹고
 # 아래 루프가 옛 기본값을 먼저 써 버리므로, 파이썬에서 한 번 덮어쓴다. 값을 바꾸거나 키를 늘리면 VERSION을 올릴 것.
-SANGW_DEFAULTS_VERSION = "4"
+SANGW_DEFAULTS_VERSION = "3"
 SANGW_DEFAULTS: dict[str, bool | int] = {
-  # 가감속은 차 SCC가 (AEB 유지). openpilot 종방향은 차의 ADAS ECU를 꺼서 전방 충돌 방지(FCA/AEB)까지 꺼짐 (2026-10-18)
-  "AlphaLongitudinalEnabled": False,
-  "IntelligentCruiseButtonManagement": True,  # ICBM: 크루즈 버튼을 대신 눌러 설정 속도 관리 (Custom ACC·SCC-V 동작)
-  "ExperimentalMode": False,
+  "AlphaLongitudinalEnabled": True,
+  "ExperimentalMode": True,
+  "ExperimentalModeConfirmed": True,
   "AutoLaneChangeTimer": 3,
   "AutoLaneChangeBsmDelay": True,
   "NeuralNetworkLateralControl": True,
@@ -39,7 +38,7 @@ SANGW_DEFAULTS: dict[str, bool | int] = {
   "MaxTimeOffroad": 180,
   "SmartCruiseControlVision": True,
   "HyundaiLongitudinalTuning": 1,
-  "DynamicExperimentalControl": False,
+  "DynamicExperimentalControl": True,
   "LaneTurnDesire": True,
   "IsMetric": True,
   # 속도 버튼: 짧게 5, 길게 1 (기존 Custom ACC 설정 사용)
