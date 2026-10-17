@@ -47,8 +47,9 @@
 - **차를 한 번 인식한 뒤에만 씀.** 차 정보(`CarParamsPersistent`)가 없으면 UI가 차 따라 다른 설정(종방향·실험 모드·DEC·NNLC·SCC-V·Custom ACC)을 지움. 그래서 새로 설치하면 첫 시동 → 재부팅(다음 시동)부터 적용, 종방향은 그다음 차 연결 때 켜짐.
 | 설정 | 원래 | 지금 |
 |---|---|---|
-| `ExperimentalMode` / `ExperimentalModeConfirmed` | 꺼짐 | 켜짐 (확인 팝업 생략) |
-| `AlphaLongitudinalEnabled` (openpilot 종방향 제어) | 꺼짐 | 켜짐 |
+| `AlphaLongitudinalEnabled` (openpilot 종방향 제어) | 꺼짐 | **꺼짐 유지** — 켜면 차의 ADAS ECU를 꺼서 전방 충돌 방지(FCA/AEB)도 꺼짐(2026-10-18 켰다가 되돌림) |
+| `IntelligentCruiseButtonManagement` (ICBM) | 꺼짐 | 켜짐 — 가감속은 차 SCC, sunnypilot은 크루즈 버튼만 대신 눌러 설정 속도 관리 |
+| `ExperimentalMode` | 꺼짐 | 꺼짐 (종방향 없으면 못 씀) |
 | `AutoLaneChangeTimer` | 0 (Nudge) | 3 (1초 타이머) |
 | `AutoLaneChangeBsmDelay` | 꺼짐 | 켜짐 |
 | `NeuralNetworkLateralControl` (NNLC) | 꺼짐 | 켜짐 |
@@ -56,10 +57,10 @@
 | `MaxTimeOffroad` | 1800분 (30h) | 180분 (3h) |
 | `SmartCruiseControlVision` | 꺼짐 | 켜짐 (`SmartCruiseControlMap`은 꺼짐 그대로) |
 | `HyundaiLongitudinalTuning` | 0 (Off) | 1 (Dynamic) |
-| `DynamicExperimentalControl` (DEC) | 꺼짐 | 켜짐 |
+| `DynamicExperimentalControl` (DEC) | 꺼짐 | 꺼짐 (종방향 없으면 못 씀) |
 | `LaneTurnDesire` | 꺼짐 | 켜짐 (속도 기준 `LaneTurnValue` 19 mph 그대로) |
 | `CustomAccIncrementsEnabled` / 짧게 / 길게 | 꺼짐 / 1 / 5 | 켜짐 / 5 / 1 (속도 버튼 짧게 5씩, 길게 1씩 — §1 대신 기존 설정 사용) |
-| `LongitudinalPersonality` | Standard | Relaxed (핸들 거리 버튼으로 바꾸면 그 값 유지) |
+| `LongitudinalPersonality` | Standard | Relaxed (openpilot 종방향일 때만 의미. 차 SCC는 계기판 차간 거리 설정을 씀) |
 | `AlwaysOnDM` / `DisengageOnAccelerator` | 꺼짐 / 꺼짐 | 꺼짐 고정 + 토글 화면에서 숨김(`selfdrive/ui/layouts/settings/toggles.py`, comma 3X 화면만) |
 
 메모:
