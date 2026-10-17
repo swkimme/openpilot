@@ -24,6 +24,43 @@ from openpilot.system.hardware import PC
 
 from openpilot.sunnypilot.system.params_migration import run_migration
 
+# [sangw 수정, docs/SANGW_MODS.md §7] 기본값 바꾸기. params_keys.h 기본값은 미리 빌드된 라이브러리(prebuilt)에선 안 먹고
+# 아래 루프가 옛 기본값을 먼저 써 버리므로, 파이썬에서 한 번 덮어쓴다. 값을 바꾸거나 키를 늘리면 VERSION을 올릴 것.
+SANGW_DEFAULTS_VERSION = "1"
+SANGW_DEFAULTS: dict[str, bool | int] = {
+  "AlphaLongitudinalEnabled": True,
+  "ExperimentalMode": True,
+  "ExperimentalModeConfirmed": True,
+  "AutoLaneChangeTimer": 3,
+  "AutoLaneChangeBsmDelay": True,
+  "NeuralNetworkLateralControl": True,
+  "QuietMode": True,
+  "MaxTimeOffroad": 180,
+  "SmartCruiseControlVision": True,
+  "HyundaiLongitudinalTuning": 1,
+  "DynamicExperimentalControl": True,
+  "LaneTurnDesire": True,
+  "IsMetric": True,
+}
+
+
+def apply_sangw_defaults(params: Params) -> None:
+  # 버전마다 한 번만 씀 → 그 뒤 설정 화면에서 바꾼 값은 유지
+  marker = os.path.join(Paths.comma_home() if PC else "/data", "sangw_defaults_version")
+  try:
+    with open(marker) as f:
+      if f.read().strip() == SANGW_DEFAULTS_VERSION:
+        return
+  except FileNotFoundError:
+    pass
+  for k, v in SANGW_DEFAULTS.items():
+    try:
+      params.put(k, v, block=True)
+    except Exception:
+      cloudlog.exception(f"sangw default failed: {k}")
+  with open(marker, "w") as f:
+    f.write(SANGW_DEFAULTS_VERSION)
+
 
 def manager_init() -> None:
   save_bootlog()
@@ -53,6 +90,11 @@ def manager_init() -> None:
 
   if not PC:
     run_migration(params)
+
+  try:
+    apply_sangw_defaults(params)  # [sangw 수정, docs/SANGW_MODS.md §7]
+  except Exception:
+    cloudlog.exception("sangw defaults failed")
 
   # set unset params to their default value
   for k in params.all_keys():

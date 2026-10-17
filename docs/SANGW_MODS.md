@@ -39,7 +39,9 @@
 - 단위 km/h(`IsMetric`): 아직 정한 적 없을 때만 켬. 설정에서 바꾼 값은 유지. 미리 빌드된 라이브러리에선 `params_keys.h` 기본값이 안 먹어서 온보딩 코드(파이썬)에서 씀.
 - 파일: `selfdrive/ui/layouts/onboarding.py`(comma 3X), `selfdrive/ui/mici/layouts/onboarding.py`(mici).
 
-## 7. 기본값 변경 (`common/params_keys.h`)
+## 7. 기본값 변경 (`system/manager/manager.py` `SANGW_DEFAULTS`, `common/params_keys.h`)
+- 실제로 적용하는 곳은 `manager.py`의 `SANGW_DEFAULTS`. 미리 빌드된 라이브러리에선 `params_keys.h` 기본값이 안 먹고(2026-10-17 QuietMode·실험 모드가 꺼진 채 설치됨), 부팅 때 옛 기본값이 먼저 써지기 때문.
+- 부팅 때 `SANGW_DEFAULTS_VERSION`이 `/data/sangw_defaults_version`과 다르면 표 값을 한 번 덮어씀 → 그 뒤 설정 화면에서 바꾼 값은 유지. 값을 고치면 두 파일을 같이 고치고 VERSION을 올릴 것.
 | 설정 | 원래 | 지금 |
 |---|---|---|
 | `ExperimentalMode` / `ExperimentalModeConfirmed` | 꺼짐 | 켜짐 (확인 팝업 생략) |
@@ -55,7 +57,7 @@
 | `LaneTurnDesire` | 꺼짐 | 켜짐 (속도 기준 `LaneTurnValue` 19 mph 그대로) |
 
 메모:
-- 종방향 제어(`AlphaLongitudinalEnabled`)는 개발자용 설정이고 release 빌드에서는 화면 토글이 숨겨짐. 기본값으로만 작동.
+- 종방향 제어(`AlphaLongitudinalEnabled`)는 설정 → Developer → "sunnypilot Longitudinal Control (Alpha)". 이게 꺼져 있으면 실험 모드(`ExperimentalMode`)가 켜지지 않고 부팅 때 지워짐.
 - NNLC는 차를 한 번 인식해야 화면 토글이 눌림. 코드는 차량 시작 시 기본값을 읽음.
 - 사각지대 지연은 차에 사각지대 경고 장치(BCW)가 있을 때만 효과.
 - DEC가 켜져 있으면 실험 모드 초기 크루즈 속도가 105가 아니라 일반 모드 값(40)으로 시작.
@@ -88,4 +90,4 @@ git fetch fork ioniq5-mod && git checkout -B ioniq5-mod fork/ioniq5-mod
 sudo reboot
 ```
 
-**주의 — 기본값 변경(`common/params_keys.h`)은 적용 안 될 수 있음.** release 브랜치라 미리 빌드된 `.so`와 `prebuilt` 파일이 들어 있어 기기가 다시 빌드하지 않음. 그래서 C++에 들어간 기본값(DEC·LaneTurnDesire·HyundaiLongitudinalTuning·MaxTimeOffroad 등)은 옛 값 그대로일 가능성이 큼 — 설치 후 설정 화면에서 직접 켤 것. 파이썬 수정(경고·온보딩·사운드·크루즈·radard)은 그대로 적용됨. 종방향 제어(`AlphaLongitudinalEnabled`)는 화면 토글이 없어 이 방법으론 못 켬 — 확실히 하려면 기기에서 `prebuilt`를 지우고 다시 빌드해야 하는데 release 브랜치에서 빌드되는지는 미확인.
+**주의 — 미리 빌드된 라이브러리.** release 브랜치라 `.so`와 `prebuilt` 파일이 들어 있어 기기가 다시 빌드하지 않음. 그래서 C++ 수정(`params_keys.h`)은 안 먹음 → 기본값은 `manager.py`(§7), 새 설정 키는 만들지 않거나 없을 때를 대비(§1). 파이썬 수정은 그대로 적용됨.
