@@ -8,6 +8,7 @@ from collections.abc import Callable
 import pyray as rl
 
 from opendbc.sunnypilot.car.tesla.values import TeslaFlagsSP
+from openpilot.common.params import Params
 from openpilot.selfdrive.ui.ui_state import ui_state
 from openpilot.sunnypilot.mads.helpers import MadsSteeringModeOnBrake
 from openpilot.system.ui.lib.multilang import tr, tr_noop
@@ -58,8 +59,13 @@ class MadsSettingsLayout(Widget):
       description=MADS_UNIFIED_ENGAGEMENT_MODE_BASE_DESC,
       param="MadsUnifiedEngagementMode"
     )
-    # [sangw 수정, docs/SANGW_MODS.md]
-    self._swap_cruise_increments_toggle = toggle_item_sp(
+    # [sangw 수정, docs/SANGW_MODS.md] 미리 빌드된 params 라이브러리에 키가 없으면 토글을 만들지 않음 (없는 키를 읽으면 UI가 죽음)
+    try:
+      Params().check_key("SwapCruiseButtonIncrements")
+      swap_key_known = True
+    except Exception:
+      swap_key_known = False
+    self._swap_cruise_increments_toggle = None if not swap_key_known else toggle_item_sp(
       title=lambda: tr("Swap Short/Long Press Set Speed"),
       description=SWAP_CRUISE_INCREMENTS_DESC,
       param="SwapCruiseButtonIncrements",
@@ -77,9 +83,10 @@ class MadsSettingsLayout(Widget):
     self.items = [
       self._main_cruise_toggle,
       self._unified_engagement_toggle,
-      self._swap_cruise_increments_toggle,
       self._steering_mode,
     ]
+    if self._swap_cruise_increments_toggle is not None:  # [sangw 수정, docs/SANGW_MODS.md]
+      self.items.insert(2, self._swap_cruise_increments_toggle)
 
   def _update_state(self):
     super()._update_state()

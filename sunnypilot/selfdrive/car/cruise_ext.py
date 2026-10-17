@@ -14,6 +14,14 @@ from openpilot.sunnypilot.selfdrive.car.intelligent_cruise_button_management.hel
 from openpilot.sunnypilot.selfdrive.controls.lib.speed_limit.speed_limit_assist import ACTIVE_STATES as SLA_ACTIVE_STATES
 from openpilot.sunnypilot.selfdrive.controls.lib.speed_limit.helpers import compare_cluster_target
 
+
+def _get_swap_press_increments(params: Params) -> bool:
+  # [sangw 수정, docs/SANGW_MODS.md] 미리 빌드된 params 라이브러리에 키가 없으면 꺼짐으로 (없는 키를 읽으면 예외)
+  try:
+    return params.get_bool("SwapCruiseButtonIncrements")
+  except Exception:
+    return False
+
 ButtonType = car.CarState.ButtonEvent.Type
 SpeedLimitAssistState = custom.LongitudinalPlanSP.SpeedLimit.AssistState
 
@@ -51,7 +59,7 @@ class VCruiseHelperSP:
     self.custom_acc_enabled = self.params.get_bool("CustomAccIncrementsEnabled")
     self.short_increment = self.params.get("CustomAccShortPressIncrement", return_default=True)
     self.long_increment = self.params.get("CustomAccLongPressIncrement", return_default=True)
-    self.swap_press_increments = self.params.get_bool("SwapCruiseButtonIncrements")  # [sangw 수정, docs/SANGW_MODS.md]
+    self.swap_press_increments = _get_swap_press_increments(self.params)  # [sangw 수정, docs/SANGW_MODS.md]
 
     self.enable_button_timers = CRUISE_BUTTON_TIMER
 
@@ -69,7 +77,7 @@ class VCruiseHelperSP:
     self.custom_acc_enabled = self.params.get_bool("CustomAccIncrementsEnabled")
     self.short_increment = self.params.get("CustomAccShortPressIncrement", return_default=True)
     self.long_increment = self.params.get("CustomAccLongPressIncrement", return_default=True)
-    self.swap_press_increments = self.params.get_bool("SwapCruiseButtonIncrements")  # [sangw 수정, docs/SANGW_MODS.md]
+    self.swap_press_increments = _get_swap_press_increments(self.params)  # [sangw 수정, docs/SANGW_MODS.md]
 
   def update_v_cruise_delta(self, long_press: bool, v_cruise_delta: float) -> tuple[bool, float]:
     # [sangw 수정, docs/SANGW_MODS.md] 짧게/길게 누름 증가폭 교체 옵션 (SwapCruiseButtonIncrements)

@@ -9,6 +9,7 @@
 - 파일: `sunnypilot/selfdrive/car/cruise_ext.py` (`swap_press_increments`), `selfdrive/ui/sunnypilot/layouts/settings/steering_sub_layouts/mads_settings.py`, `common/params_keys.h` (`SwapCruiseButtonIncrements`, 기본 꺼짐), 테스트 `sunnypilot/selfdrive/car/tests/test_custom_cruise.py`.
 - 적용 조건: openpilot이 설정 속도를 직접 관리할 때(종방향 제어 켬)만 작동. 순정 크루즈 모드에서는 효과 없음.
 - Custom ACC 증가폭과 같이 켜면 정해 둔 짧게/길게 값이 서로 바뀜.
+- **새 설정 키라 미리 빌드된 params 라이브러리(`params_pyx.so`)엔 없음.** 없는 키를 읽으면 예외 → UI가 죽어 부팅 화면에서 멈춤(2026-10-17 실제 발생). 그래서 키가 없으면 UI는 토글을 숨기고 크루즈 코드는 꺼짐으로 처리. 다시 빌드해야 토글이 보임.
 
 ## 2. 운전자 모니터링 완화 (`selfdrive/monitoring/policy.py`)
 | 항목 | 원래 | 지금 |
