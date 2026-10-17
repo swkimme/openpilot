@@ -58,6 +58,8 @@
 | `DynamicExperimentalControl` (DEC) | 꺼짐 | 켜짐 |
 | `LaneTurnDesire` | 꺼짐 | 켜짐 (속도 기준 `LaneTurnValue` 19 mph 그대로) |
 | `CustomAccIncrementsEnabled` / 짧게 / 길게 | 꺼짐 / 1 / 5 | 켜짐 / 5 / 1 (속도 버튼 짧게 5씩, 길게 1씩 — §1 대신 기존 설정 사용) |
+| `LongitudinalPersonality` | Standard | Relaxed (핸들 거리 버튼으로 바꾸면 그 값 유지) |
+| `AlwaysOnDM` / `DisengageOnAccelerator` | 꺼짐 / 꺼짐 | 꺼짐 고정 + 토글 화면에서 숨김(`selfdrive/ui/layouts/settings/toggles.py`, comma 3X 화면만) |
 
 메모:
 - Custom ACC 토글은 주행 중에도 바꿀 수 있게 풂(`selfdrive/ui/sunnypilot/layouts/settings/cruise.py`, 원래 시동 꺼짐에서만). 크루즈 쪽이 0.1초마다 다시 읽어 바로 반영 — 운전 중에 바꾸면 버튼 한 번에 오르는 폭이 즉시 달라짐.
