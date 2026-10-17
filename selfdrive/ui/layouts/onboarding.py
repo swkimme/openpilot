@@ -181,6 +181,9 @@ class OnboardingWindow(Widget):
     ui_state.params.put("HasAcceptedTermsSP", terms_version_sp, block=True)
     ui_state.params.put_bool("SunnylinkEnabled", False)
     ui_state.params.put("CompletedSunnylinkConsentVersion", sunnylink_consent_declined)
+    # [sangw 수정, docs/SANGW_MODS.md] 단위 기본값 km/h: 아직 안 정했을 때만 (설정에서 바꾼 값은 그대로)
+    if ui_state.params.get("IsMetric") is None:
+      ui_state.params.put_bool("IsMetric", True)
     self._accepted_terms: bool = ui_state.params.get("HasAcceptedTerms") == terms_version
     self._training_done: bool = ui_state.params.get("CompletedTrainingVersion") == training_version
     # [sangw 수정, docs/SANGW_MODS.md] 튜토리얼(트레이닝 가이드) 건너뛰기: 완료한 것으로 처리

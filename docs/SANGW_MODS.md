@@ -36,6 +36,7 @@
 - 튜토리얼(트레이닝 가이드): 완료로 처리.
 - 약관 동의 (`HasAcceptedTerms`, `HasAcceptedTermsSP`): 자동 저장.
 - sunnylink: 사용 안 함으로 고정 (`SunnylinkEnabled=False`, 거절 기록). 설정에서 켜도 재부팅하면 다시 꺼짐.
+- 단위 km/h(`IsMetric`): 아직 정한 적 없을 때만 켬. 설정에서 바꾼 값은 유지. 미리 빌드된 라이브러리에선 `params_keys.h` 기본값이 안 먹어서 온보딩 코드(파이썬)에서 씀.
 - 파일: `selfdrive/ui/layouts/onboarding.py`(comma 3X), `selfdrive/ui/mici/layouts/onboarding.py`(mici).
 
 ## 7. 기본값 변경 (`common/params_keys.h`)
