@@ -30,7 +30,13 @@
 - 앞차 인식 확률 기준 `LEAD_PROB_MIN`: 0.5 → 0.4. 끼어드는 차를 더 일찍 앞차로 잡음. 대신 오인식 감속이 늘 수 있음.
 
 ## 5. 감속 거동 (`selfdrive/controls/lib/longitudinal_mpc_lib/long_mpc.py`)
-- Relax 차간 시간(`get_T_FOLLOW` relaxed): 원래 1.75초 고정 → **속도에 따라 30km/h 이하 1.6초, 100km/h 이상 2.0초, 사이는 비례**(2026-10-18). 2.0초 고정은 저속에서 너무 멀었음. 거리(+정지 거리 6m): 30km/h 약 19m · 60km/h 약 36m · 100km/h 약 62m. Standard도 같은 방식으로 30km/h 이하 1.45초 → 100km/h 이상 1.6초(원래 1.45 고정, 2026-10-18): 30km/h 약 18m · 60km/h 약 31m · 100km/h 약 50m. Aggressive도 30km/h 이하 1.25초 → 100km/h 이상 1.45초(원래 1.25 고정): 30km/h 약 16m · 100km/h 약 46m. 정지 거리 6m(`STOP_DISTANCE`)는 미리 빌드된 솔버에 들어 있어 못 바꿈.
+- 차간 시간(`get_T_FOLLOW`)을 속도에 따라(2026-10-18): **30km/h 이하만 가깝게, 30~50km/h에서 비례로 넘어가고 50km/h 이상은 먼 값.** 30km/h에서 딱 끊으면 목표 거리가 갑자기 몇 m 바뀌어 그 속도 근처에서 꿀렁거려서 20km/h 폭으로 넘김. 원래는 고정(Relax 1.75 · Standard 1.45 · Aggressive 1.25초). 정지 거리 6m(`STOP_DISTANCE`)는 미리 빌드된 솔버에 들어 있어 못 바꿈.
+
+  | 모드 | 30km/h 이하 | 50km/h 이상 | 거리 30 / 50 / 100km/h |
+  |---|---|---|---|
+  | Relax | 1.6초 | 2.0초 | 약 19 / 34 / 62m |
+  | Standard | 1.45초 | 1.6초 | 약 18 / 28 / 50m |
+  | Aggressive | 1.25초 | 1.45초 | 약 16 / 26 / 46m |
 - `COMFORT_BRAKE`: 2.2로 바꿨다가 **2.5로 되돌림**(2026-10-18). 이 값은 MPC 솔버(`c_generated_code`, 미리 빌드된 C)에도 들어가는데 기기는 다시 빌드하지 않음 → 파이썬 쪽(앞차 정지거리)만 2.2가 돼서 목표 거리가 v²×(1/4.4−1/5)만큼 줄었음. 100km/h에서 약 21m(0.75초) 더 붙음 → Relax인데 1.2초까지 접근한 원인. 바꾸려면 솔버를 다시 생성·빌드해야 함.
 
 ## 6. 온보딩 건너뛰기
@@ -113,7 +119,7 @@ sudo reboot
 6. [x] **Cruise** — Custom ACC 켜짐(짧게 5 · 길게 1), DEC 켜짐, SCC-V 켜짐 (§7).
 7. [ ] **Vehicle · Models · Device · Visuals** — Enable Tesla Rainbow Mode·Display Turn Signals·Real-time Acceleration Bar·Speedometer: Hide from Onroad Screen 안 보임, HyundaiLongitudinalTuning = Dynamic, LaneTurnDesire 켜짐, QuietMode 켜짐, Max Time Offroad 3시간 (§7).
 8. [x] **주행: 속도 버튼** — 짧게 누르면 5씩, 길게 누르면 1씩 (§7).
-9. [ ] **주행: 차간 거리** — Relax 정속에서 저속(30km/h 이하) 약 1.6초, 고속(100km/h) 약 2초(약 62m), 따라잡을 때도 1.2초까지 안 붙음 (§5).
+9. [ ] **주행: 차간 거리** — Relax 정속에서 30km/h 이하 약 1.6초(약 19m), 50km/h 이상 약 2초(100km/h 약 62m), 따라잡을 때도 1.2초까지 안 붙음 (§5).
 10. [x] **주행: 운전자 모니터링** — 앞을 보라는 경고가 늦게(10·20·30초), 경고음이 작게 (§2·§3).
 11. [ ] **주행: 차선 변경** — 깜빡이 켜고 0.5초 뒤 자동 변경, 옆 차 있으면 기다림 (§7).
 
