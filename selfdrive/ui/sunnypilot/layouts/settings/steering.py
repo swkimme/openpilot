@@ -10,6 +10,7 @@ from enum import IntEnum
 from openpilot.selfdrive.ui.ui_state import ui_state
 from openpilot.system.ui.lib.multilang import tr
 from openpilot.system.ui.sunnypilot.widgets.list_view import toggle_item_sp, simple_button_item_sp, option_item_sp, LineSeparatorSP
+from openpilot.system.ui.sunnypilot.lib.styles import style  # [sangw 수정]
 from openpilot.system.ui.widgets.scroller_tici import Scroller
 from openpilot.system.ui.widgets import Widget
 from openpilot.selfdrive.ui.sunnypilot.layouts.settings.steering_sub_layouts.lane_change_settings import LaneChangeSettingsLayout
@@ -94,8 +95,11 @@ class SteeringLayout(Widget):
     self._nnlc_toggle = toggle_item_sp(
       param="NeuralNetworkLateralControl",
       title=lambda: tr("Neural Network Lateral Control (NNLC)"),
-      description=""
+      # [sangw 수정, docs/SANGW_MODS.md] 노란 경고 문구 (2026-10-18 저속에서 핸들을 좌우로 흔들어 끔)
+      description="<b>WARNING: On this car NNLC swings the steering wheel left and right at low speed. Keep it OFF.</b>"
     )
+    self._nnlc_toggle._html_renderer._text_color = style.YELLOW  # [sangw 수정]
+    self._nnlc_toggle.show_description(True)
 
     items = [
       self._mads_toggle,

@@ -51,7 +51,7 @@
 | `AlphaLongitudinalEnabled` (openpilot 종방향 제어) | 꺼짐 | 켜짐 |
 | `AutoLaneChangeTimer` | 0 (Nudge) | 2 (0.5초 타이머, 2026-10-18에 1초 → 0.5초) |
 | `AutoLaneChangeBsmDelay` | 꺼짐 | 켜짐 |
-| `NeuralNetworkLateralControl` (NNLC) | 꺼짐 | 켜짐 |
+| `NeuralNetworkLateralControl` (NNLC) | 꺼짐 | **꺼짐** — 켜 봤더니 저속에서 핸들을 좌우로 흔들어 끔(2026-10-18). Steering 화면 NNLC 아래 노란 경고 문구 |
 | `QuietMode` | 꺼짐 | 켜짐 |
 | `MaxTimeOffroad` | 1800분 (30h) | 180분 (3h) |
 | `SmartCruiseControlVision` | 꺼짐 | 켜짐 (`SmartCruiseControlMap`은 꺼짐 그대로) |
@@ -109,7 +109,7 @@ sudo reboot
 2. [x] **첫 화면** — 온보딩·약관·sunnylink 팝업 없음, 설정 사이드바에 sunnylink 메뉴 없음 (§6).
 3. [ ] **Toggles** — Experimental Mode 켜짐, Driving Personality = Relaxed, 속도가 km/h, Use Metric System·Always-On Driver Monitoring·Disengage on Accelerator Pedal·Record and Upload Driver Camera·Record and Upload Microphone Audio 안 보임 (§7).
 4. [x] **Developer** — sunnypilot Longitudinal Control (Alpha) 켜짐. 계기판 AEB 꺼짐 아이콘이 뜨는 게 정상 → 직접 운전할 때도 차 긴급제동 없음 (§7 메모).
-5. [ ] **Steering** — NNLC 켜짐, 차선 변경 타이머 0.5초, 사각지대 지연 켜짐 (§7).
+5. [ ] **Steering** — NNLC 꺼짐(노란 경고 문구 보임), 차선 변경 타이머 0.5초, 사각지대 지연 켜짐 (§7).
 6. [x] **Cruise** — Custom ACC 켜짐(짧게 5 · 길게 1), DEC 켜짐, SCC-V 켜짐 (§7).
 7. [ ] **Vehicle · Models · Device · Visuals** — Enable Tesla Rainbow Mode·Display Turn Signals·Real-time Acceleration Bar·Speedometer: Hide from Onroad Screen 안 보임, HyundaiLongitudinalTuning = Dynamic, LaneTurnDesire 켜짐, QuietMode 켜짐, Max Time Offroad 3시간 (§7).
 8. [x] **주행: 속도 버튼** — 짧게 누르면 5씩, 길게 누르면 1씩 (§7).

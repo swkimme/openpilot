@@ -33,7 +33,7 @@ SANGW_DEFAULTS: dict[str, bool | int] = {
   "ExperimentalModeConfirmed": True,
   "AutoLaneChangeTimer": 2,  # 0.5초 (nudge 0 · nudgeless 1 · 0.5초 2 · 1초 3)
   "AutoLaneChangeBsmDelay": True,
-  "NeuralNetworkLateralControl": True,
+  "NeuralNetworkLateralControl": False,  # 2026-10-18 저속에서 핸들을 좌우로 흔들어 끔
   "QuietMode": True,
   "MaxTimeOffroad": 180,
   "SmartCruiseControlVision": True,
