@@ -140,8 +140,8 @@ class TogglesLayout(Widget):
         self._toggles["LongitudinalPersonality"] = self._long_personality_setting
 
     self._update_experimental_mode_icon()
-    # [sangw 수정, docs/SANGW_MODS.md] 화면에서 숨김 (값은 manager.py SANGW_DEFAULTS로 꺼짐 고정)
-    hidden = ("AlwaysOnDM", "DisengageOnAccelerator", "RecordFront", "RecordAudio")
+    # [sangw 수정, docs/SANGW_MODS.md] 화면에서 숨김 (값은 manager.py SANGW_DEFAULTS로 고정 — IsMetric만 켜짐, 나머지 꺼짐)
+    hidden = ("AlwaysOnDM", "DisengageOnAccelerator", "RecordFront", "RecordAudio", "IsMetric")
     self._scroller = Scroller([t for k, t in self._toggles.items() if k not in hidden], line_separator=True, spacing=0)
 
     ui_state.add_engaged_transition_callback(self._update_toggles)

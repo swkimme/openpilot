@@ -26,7 +26,7 @@ from openpilot.sunnypilot.system.params_migration import run_migration
 
 # [sangw 수정, docs/SANGW_MODS.md §7] 기본값 바꾸기. params_keys.h 기본값은 미리 빌드된 라이브러리(prebuilt)에선 안 먹고
 # 아래 루프가 옛 기본값을 먼저 써 버리므로, 파이썬에서 한 번 덮어쓴다. 값을 바꾸거나 키를 늘리면 VERSION을 올릴 것.
-SANGW_DEFAULTS_VERSION = "5"  # 4는 되돌린 버전이라 건너뜀
+SANGW_DEFAULTS_VERSION = "6"  # 4는 되돌린 버전이라 건너뜀
 SANGW_DEFAULTS: dict[str, bool | int] = {
   "AlphaLongitudinalEnabled": True,
   "ExperimentalMode": True,
@@ -40,7 +40,7 @@ SANGW_DEFAULTS: dict[str, bool | int] = {
   "HyundaiLongitudinalTuning": 1,
   "DynamicExperimentalControl": True,
   "LaneTurnDesire": True,
-  "IsMetric": True,
+  "IsMetric": True,  # Toggles에서 숨김 — km/h 고정
   # 속도 버튼: 짧게 5, 길게 1 (기존 Custom ACC 설정 사용)
   "CustomAccIncrementsEnabled": True,
   "CustomAccShortPressIncrement": 5,
@@ -51,6 +51,7 @@ SANGW_DEFAULTS: dict[str, bool | int] = {
   "DisengageOnAccelerator": False,
   "RecordFront": False,
   "RecordAudio": False,
+  "RainbowMode": False,  # Visuals에서 숨김
 }
 
 
