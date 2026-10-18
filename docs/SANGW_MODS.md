@@ -49,7 +49,7 @@
 |---|---|---|
 | `ExperimentalMode` / `ExperimentalModeConfirmed` | 꺼짐 | 켜짐 (확인 팝업 생략) |
 | `AlphaLongitudinalEnabled` (openpilot 종방향 제어) | 꺼짐 | 켜짐 |
-| `AutoLaneChangeTimer` | 0 (Nudge) | 3 (1초 타이머) |
+| `AutoLaneChangeTimer` | 0 (Nudge) | 2 (0.5초 타이머, 2026-10-18에 1초 → 0.5초) |
 | `AutoLaneChangeBsmDelay` | 꺼짐 | 켜짐 |
 | `NeuralNetworkLateralControl` (NNLC) | 꺼짐 | 켜짐 |
 | `QuietMode` | 꺼짐 | 켜짐 |
@@ -60,7 +60,7 @@
 | `LaneTurnDesire` | 꺼짐 | 켜짐 (속도 기준 `LaneTurnValue` 19 mph 그대로) |
 | `CustomAccIncrementsEnabled` / 짧게 / 길게 | 꺼짐 / 1 / 5 | 켜짐 / 5 / 1 (속도 버튼 짧게 5씩, 길게 1씩 — §1 대신 기존 설정 사용) |
 | `LongitudinalPersonality` | Standard | Relaxed (핸들 거리 버튼으로 바꾸면 그 값 유지) |
-| `AlwaysOnDM` / `DisengageOnAccelerator` | 꺼짐 / 꺼짐 | 꺼짐 고정 + 토글 화면에서 숨김(`selfdrive/ui/layouts/settings/toggles.py`, comma 3X 화면만) |
+| `AlwaysOnDM` / `DisengageOnAccelerator` / `RecordFront` / `RecordAudio` | 꺼짐 | 꺼짐 고정 + 토글 화면에서 숨김(`selfdrive/ui/layouts/settings/toggles.py`, comma 3X 화면만) |
 
 메모:
 - **종방향 제어를 켜면 차의 전방 충돌 방지(FCA/AEB)가 꺼짐.** openpilot이 차 ADAS ECU(0x7d0)를 진단 명령으로 끄고 계기판에 AEB 꺼짐 아이콘을 띄움(opendbc `hyundai/interface.py`·`hyundaicanfd.py`). 대신 openpilot 감속은 최대 −3.5m/s²(차 AEB는 약 −9~10), 못 멈출 것 같으면 "BRAKE!" 경고만(더 세게 밟지 않음). openpilot을 안 켜고 직접 운전할 땐 자동 감속 없음. 알고 켜 둠(2026-10-18). 끄려면 Developer에서 longitudinal alpha 끄고 ICBM 켜기.
@@ -101,16 +101,16 @@ sudo reboot
 **주의 — 미리 빌드된 라이브러리.** release 브랜치라 `.so`와 `prebuilt` 파일이 들어 있어 기기가 다시 빌드하지 않음. 그래서 C++ 수정(`params_keys.h`)은 안 먹음 → 기본값은 `manager.py`(§7), 새 설정 키는 만들지 않거나 없을 때를 대비(§1). 파이썬 수정은 그대로 적용됨.
 
 ## 11. 확인 체크리스트
-업데이트·재설치 뒤 이 순서로 확인. 안 맞는 게 있으면 해당 절을 볼 것. 1~6·8~11 확인(2026-10-18), 7 남음.
+업데이트·재설치 뒤 이 순서로 확인. 안 맞는 게 있으면 해당 절을 볼 것. 1·2·4·6·8~10 확인(2026-10-18). 3·5·11은 0.5초·메뉴 숨김 추가로 다시 확인, 7 남음.
 
 1. [x] **버전** — Software에 브랜치 `ioniq5-mod`, 최신 커밋인지.
 2. [x] **첫 화면** — 온보딩·약관·sunnylink 팝업 없음, 설정 사이드바에 sunnylink 메뉴 없음 (§6).
-3. [x] **Toggles** — Experimental Mode 켜짐, Driving Personality = Relaxed, Use Metric System 켜짐, Always-On Driver Monitoring·Disengage on Accelerator Pedal 안 보임 (§7).
+3. [ ] **Toggles** — Experimental Mode 켜짐, Driving Personality = Relaxed, Use Metric System 켜짐, Always-On Driver Monitoring·Disengage on Accelerator Pedal·Record and Upload Driver Camera·Record and Upload Microphone Audio 안 보임 (§7).
 4. [x] **Developer** — sunnypilot Longitudinal Control (Alpha) 켜짐. 계기판 AEB 꺼짐 아이콘이 뜨는 게 정상 → 직접 운전할 때도 차 긴급제동 없음 (§7 메모).
-5. [x] **Steering** — NNLC 켜짐, 차선 변경 타이머 1초, 사각지대 지연 켜짐 (§7).
+5. [ ] **Steering** — NNLC 켜짐, 차선 변경 타이머 0.5초, 사각지대 지연 켜짐 (§7).
 6. [x] **Cruise** — Custom ACC 켜짐(짧게 5 · 길게 1), DEC 켜짐, SCC-V 켜짐 (§7).
 7. [ ] **Vehicle · Models · Device** — HyundaiLongitudinalTuning = Dynamic, LaneTurnDesire 켜짐, QuietMode 켜짐, Max Time Offroad 3시간 (§7).
 8. [x] **주행: 속도 버튼** — 짧게 누르면 5씩, 길게 누르면 1씩 (§7).
 9. [x] **주행: 차간 거리** — Relax 정속에서 앞차와 약 2초(100km/h 약 62m), 따라잡을 때도 1.2초까지 안 붙음 (§5).
 10. [x] **주행: 운전자 모니터링** — 앞을 보라는 경고가 늦게(10·20·30초), 경고음이 작게 (§2·§3).
-11. [x] **주행: 차선 변경** — 깜빡이 켜고 1초 뒤 자동 변경, 옆 차 있으면 기다림 (§7).
+11. [ ] **주행: 차선 변경** — 깜빡이 켜고 0.5초 뒤 자동 변경, 옆 차 있으면 기다림 (§7).
