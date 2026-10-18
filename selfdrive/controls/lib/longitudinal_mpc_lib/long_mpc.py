@@ -70,18 +70,22 @@ def get_jerk_factor(personality=log.LongitudinalPersonality.standard):
     raise NotImplementedError("Longitudinal personality not supported")
 
 
-# [sangw 수정, docs/SANGW_MODS.md §5] Relax 차간 시간을 속도에 따라: 30km/h 이하 1.6초 → 100km/h 이상 2.0초 (원래 1.75 고정)
-RELAXED_T_FOLLOW_BP = [30. / 3.6, 100. / 3.6]  # m/s
+# [sangw 수정, docs/SANGW_MODS.md §5] 차간 시간을 속도에 따라 (30km/h 이하 → 100km/h 이상, 사이는 비례)
+# Relax 1.6 → 2.0초 (원래 1.75 고정), Standard 1.45 → 1.6초 (원래 1.45 고정)
+T_FOLLOW_BP = [30. / 3.6, 100. / 3.6]  # m/s
 RELAXED_T_FOLLOW_V = [1.6, 2.0]
+STANDARD_T_FOLLOW_V = [1.45, 1.6]
 
 
 def get_T_FOLLOW(personality=log.LongitudinalPersonality.standard, v_ego=None):
   if personality==log.LongitudinalPersonality.relaxed:
     if v_ego is None:
       return RELAXED_T_FOLLOW_V[-1]
-    return float(np.interp(v_ego, RELAXED_T_FOLLOW_BP, RELAXED_T_FOLLOW_V))
+    return float(np.interp(v_ego, T_FOLLOW_BP, RELAXED_T_FOLLOW_V))
   elif personality==log.LongitudinalPersonality.standard:
-    return 1.45
+    if v_ego is None:
+      return STANDARD_T_FOLLOW_V[0]
+    return float(np.interp(v_ego, T_FOLLOW_BP, STANDARD_T_FOLLOW_V))
   elif personality==log.LongitudinalPersonality.aggressive:
     return 1.25
   else:
