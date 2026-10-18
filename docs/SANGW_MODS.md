@@ -116,3 +116,27 @@ sudo reboot
 9. [ ] **주행: 차간 거리** — Relax 정속에서 저속(30km/h 이하) 약 1.6초, 고속(100km/h) 약 2초(약 62m), 따라잡을 때도 1.2초까지 안 붙음 (§5).
 10. [x] **주행: 운전자 모니터링** — 앞을 보라는 경고가 늦게(10·20·30초), 경고음이 작게 (§2·§3).
 11. [ ] **주행: 차선 변경** — 깜빡이 켜고 0.5초 뒤 자동 변경, 옆 차 있으면 기다림 (§7).
+
+## 12. 당근파일럿으로 옮길 때 (검토 2026-10-18)
+비교 대상: `ajouatom/openpilot` `carrot` 브랜치(커밋 `62d0043`, 2026-09-19). 결론: 대부분 옮길 수 있음. 실제로 고칠 코드는 4곳(운전자 모니터링·경고음·온보딩·기본값 덮어쓰기), 나머지는 당근 설정으로 해결.
+
+- 구조: 0.9.x 기반, 파이썬 UI, 미리 빌드된 브랜치(`prebuilt`) → C++ 기본값이 안 먹는 문제 같음 → `manager.py` 기본값 덮어쓰기 방식(§7) 그대로 씀. 저장소에선 코드가 `openpilot/` 아래 한 단계 더 들어가 있고, 기기 OS(AGNOS)는 당근 전용 버전을 씀.
+
+| 우리 수정 | 당근에서 | 방법 |
+|---|---|---|
+| 차간 시간 속도별 (§5) | 설정에 있음: 모드별 `TFollowGap1~4`(기본 1.1·1.2·1.4·1.6초), 속도 배율 `SpeedTFFactor`, 감속 중 늘리기 `TFollowDecelBoost` | 설정값으로 맞춤 |
+| 운전자 모니터링 완화 (§2) | `openpilot/selfdrive/monitoring/policy.py` 원래 값 그대로 | 같은 자리 수정 |
+| 경고음 볼륨 (§3) | 전체 볼륨 `SoundVolumeAdjust`만 있음 | `soundd.py`에 다시 적용 |
+| 속도 버튼 짧게 5·길게 1 | `CruiseSpeedUnit`·`CruiseSpeedUnitBasic`·`CruiseButtonMode` | 설정으로 (동작 확인 필요) |
+| 차선 변경 0.5초 | `LaneChangeDelay`·`LaneChangeNeedTorque`·`LaneChangeBsd` | 설정으로 |
+| 온보딩 건너뛰기 (§6) | `onboarding.py` 있음, sunnylink 없음 | 약관 부분만 |
+| 메뉴 숨김 | Toggles 화면 구조 다름, Visuals 없음 | 다시 짬 |
+| 기본값 덮어쓰기 (§7) | `system/manager/manager.py` 기본값 루프 같은 구조 | 그대로 (키 이름은 당근 것으로) |
+| NNLC·SCC-M·ICBM | sunnypilot 전용 | 해당 없음 |
+| `COMFORT_BRAKE` | 2.5 그대로 | 안 건드림 (§5 교훈) |
+
+주의:
+- **AEB 문제는 그대로.** HDA2에서 openpilot 종방향이면 당근도 ADAS ECU를 끔. 18핀 하네스 배선 개조로 레이더를 살리는 방식이 있음(당근 가이드 「HDA2 차량의 배선 개조」) — 갈아타는 이유가 AEB면 이것부터 확인.
+- 설정 대부분을 폰 앱(CarrotMan)이나 웹으로 바꿈 → 코드 수정이 sunnypilot보다 적음.
+- 한국 내비 연동(APN, 과속카메라·방지턱 감속)은 CarrotMan 필요.
+
