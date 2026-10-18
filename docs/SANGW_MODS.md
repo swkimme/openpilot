@@ -62,7 +62,7 @@
 | `LongitudinalPersonality` | Standard | Relaxed (핸들 거리 버튼으로 바꾸면 그 값 유지) |
 | `AlwaysOnDM` / `DisengageOnAccelerator` / `RecordFront` / `RecordAudio` | 꺼짐 | 꺼짐 고정 + 토글 화면에서 숨김(`selfdrive/ui/layouts/settings/toggles.py`, comma 3X 화면만) |
 | `IsMetric` | 없음 | km/h 고정 + Toggles에서 숨김 |
-| `RainbowMode` | 꺼짐 | 꺼짐 고정 + Visuals에서 숨김(`selfdrive/ui/sunnypilot/layouts/settings/visuals.py`) |
+| `RainbowMode` / `ShowTurnSignals` / `RocketFuel`(가속 막대) / `HideVEgoUI`(속도계 숨김) | 꺼짐 | 꺼짐 고정(속도계는 보임) + Visuals에서 숨김(`selfdrive/ui/sunnypilot/layouts/settings/visuals.py`) |
 
 메모:
 - **종방향 제어를 켜면 차의 전방 충돌 방지(FCA/AEB)가 꺼짐.** openpilot이 차 ADAS ECU(0x7d0)를 진단 명령으로 끄고 계기판에 AEB 꺼짐 아이콘을 띄움(opendbc `hyundai/interface.py`·`hyundaicanfd.py`). 대신 openpilot 감속은 최대 −3.5m/s²(차 AEB는 약 −9~10), 못 멈출 것 같으면 "BRAKE!" 경고만(더 세게 밟지 않음). openpilot을 안 켜고 직접 운전할 땐 자동 감속 없음. 알고 켜 둠(2026-10-18). 끄려면 Developer에서 longitudinal alpha 끄고 ICBM 켜기.
@@ -111,7 +111,7 @@ sudo reboot
 4. [x] **Developer** — sunnypilot Longitudinal Control (Alpha) 켜짐. 계기판 AEB 꺼짐 아이콘이 뜨는 게 정상 → 직접 운전할 때도 차 긴급제동 없음 (§7 메모).
 5. [ ] **Steering** — NNLC 켜짐, 차선 변경 타이머 0.5초, 사각지대 지연 켜짐 (§7).
 6. [x] **Cruise** — Custom ACC 켜짐(짧게 5 · 길게 1), DEC 켜짐, SCC-V 켜짐 (§7).
-7. [ ] **Vehicle · Models · Device · Visuals** — Enable Tesla Rainbow Mode 안 보임, HyundaiLongitudinalTuning = Dynamic, LaneTurnDesire 켜짐, QuietMode 켜짐, Max Time Offroad 3시간 (§7).
+7. [ ] **Vehicle · Models · Device · Visuals** — Enable Tesla Rainbow Mode·Display Turn Signals·Real-time Acceleration Bar·Speedometer: Hide from Onroad Screen 안 보임, HyundaiLongitudinalTuning = Dynamic, LaneTurnDesire 켜짐, QuietMode 켜짐, Max Time Offroad 3시간 (§7).
 8. [x] **주행: 속도 버튼** — 짧게 누르면 5씩, 길게 누르면 1씩 (§7).
 9. [x] **주행: 차간 거리** — Relax 정속에서 앞차와 약 2초(100km/h 약 62m), 따라잡을 때도 1.2초까지 안 붙음 (§5).
 10. [x] **주행: 운전자 모니터링** — 앞을 보라는 경고가 늦게(10·20·30초), 경고음이 작게 (§2·§3).

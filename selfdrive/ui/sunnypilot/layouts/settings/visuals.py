@@ -122,7 +122,8 @@ class VisualsLayout(Widget):
     )
 
     # [sangw 수정, docs/SANGW_MODS.md] 화면에서 숨김 (값은 manager.py SANGW_DEFAULTS로 꺼짐 고정)
-    items = [t for k, t in self._toggles.items() if k != "RainbowMode"] + [
+    hidden = ("RainbowMode", "ShowTurnSignals", "RocketFuel", "HideVEgoUI")
+    items = [t for k, t in self._toggles.items() if k not in hidden] + [
       self._chevron_info,
       self._dev_ui_info,
     ]
