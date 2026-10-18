@@ -101,14 +101,14 @@ sudo reboot
 **주의 — 미리 빌드된 라이브러리.** release 브랜치라 `.so`와 `prebuilt` 파일이 들어 있어 기기가 다시 빌드하지 않음. 그래서 C++ 수정(`params_keys.h`)은 안 먹음 → 기본값은 `manager.py`(§7), 새 설정 키는 만들지 않거나 없을 때를 대비(§1). 파이썬 수정은 그대로 적용됨.
 
 ## 11. 확인 체크리스트
-업데이트·재설치 뒤 이 순서로 확인. 안 맞는 게 있으면 해당 절을 볼 것. 1~3 확인(2026-10-18).
+업데이트·재설치 뒤 이 순서로 확인. 안 맞는 게 있으면 해당 절을 볼 것. 1~6 확인(2026-10-18).
 
 1. [x] **버전** — Software에 브랜치 `ioniq5-mod`, 최신 커밋인지.
 2. [x] **첫 화면** — 온보딩·약관·sunnylink 팝업 없음, 설정 사이드바에 sunnylink 메뉴 없음 (§6).
 3. [x] **Toggles** — Experimental Mode 켜짐, Driving Personality = Relaxed, Use Metric System 켜짐, Always-On Driver Monitoring·Disengage on Accelerator Pedal 안 보임 (§7).
-4. [ ] **Developer** — sunnypilot Longitudinal Control (Alpha) 켜짐. 계기판 AEB 꺼짐 아이콘이 뜨는 게 정상 → 직접 운전할 때도 차 긴급제동 없음 (§7 메모).
-5. [ ] **Steering** — NNLC 켜짐, 차선 변경 타이머 1초, 사각지대 지연 켜짐 (§7).
-6. [ ] **Cruise** — Custom ACC 켜짐(짧게 5 · 길게 1), DEC 켜짐, SCC-V 켜짐 (§7).
+4. [x] **Developer** — sunnypilot Longitudinal Control (Alpha) 켜짐. 계기판 AEB 꺼짐 아이콘이 뜨는 게 정상 → 직접 운전할 때도 차 긴급제동 없음 (§7 메모).
+5. [x] **Steering** — NNLC 켜짐, 차선 변경 타이머 1초, 사각지대 지연 켜짐 (§7).
+6. [x] **Cruise** — Custom ACC 켜짐(짧게 5 · 길게 1), DEC 켜짐, SCC-V 켜짐 (§7).
 7. [ ] **Vehicle · Models · Device** — HyundaiLongitudinalTuning = Dynamic, LaneTurnDesire 켜짐, QuietMode 켜짐, Max Time Offroad 3시간 (§7).
 8. [ ] **주행: 속도 버튼** — 짧게 누르면 5씩, 길게 누르면 1씩 (§7).
 9. [ ] **주행: 차간 거리** — Relax 정속에서 앞차와 약 2초(100km/h 약 62m), 따라잡을 때도 1.2초까지 안 붙음 (§5).
