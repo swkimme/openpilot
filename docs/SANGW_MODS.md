@@ -87,11 +87,12 @@
 ## 9. 저장소
 - 작업 브랜치: `ioniq5-mod` (포크 `swkimme/sunnypilot`, 원격 이름 `fork`). `origin`은 sunnypilot 공식 저장소라 푸시 불가.
 - 설치용 사본: 같은 브랜치를 `swkimme/openpilot`에도 둠. `installer.comma.ai/<사용자>/<브랜치>`는 `<사용자>/openpilot` 저장소만 찾기 때문.
-- 고친 뒤엔 두 곳 다 푸시:
+- 고친 뒤엔 두 곳 다 푸시. **기기는 `swkimme/openpilot`만 봄** — 여기 빠뜨리면 기기에서 업데이트 확인해도 "up to date"(2026-11-03에 겪음):
   ```
   git push fork ioniq5-mod
   git push https://github.com/swkimme/openpilot.git ioniq5-mod
   ```
+  이 PC는 `remote.fork.pushurl`에 두 주소를 다 넣어 둬서 `git push fork ioniq5-mod` 한 번이면 둘 다 감.
 
 ## 10. 기기에 설치
 1. 기기 설정 → 소프트웨어 → 제거(Uninstall).
@@ -102,7 +103,7 @@ SSH로 바꾸는 법(설치 화면 없이): 설정 → 개발자 → SSH 켜고 
 ```
 ssh comma@<기기IP>
 cd /data/openpilot
-git remote set-url origin https://github.com/swkimme/sunnypilot.git   # 업데이트는 origin만 봄
+git remote set-url origin https://github.com/swkimme/openpilot.git   # 업데이트는 origin만 봄 — 설치기와 같은 저장소
 git fetch origin ioniq5-mod && git checkout -B ioniq5-mod origin/ioniq5-mod
 sudo reboot
 ```
