@@ -102,8 +102,8 @@ SSH로 바꾸는 법(설치 화면 없이): 설정 → 개발자 → SSH 켜고 
 ```
 ssh comma@<기기IP>
 cd /data/openpilot
-git remote add fork https://github.com/swkimme/sunnypilot.git
-git fetch fork ioniq5-mod && git checkout -B ioniq5-mod fork/ioniq5-mod
+git remote set-url origin https://github.com/swkimme/sunnypilot.git   # 업데이트는 origin만 봄
+git fetch origin ioniq5-mod && git checkout -B ioniq5-mod origin/ioniq5-mod
 sudo reboot
 ```
 
