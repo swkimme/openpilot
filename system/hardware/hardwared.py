@@ -285,7 +285,8 @@ def hardware_thread(end_event, hw_queue) -> None:
 
     # **** starting logic ****
 
-    startup_conditions["up_to_date"] = params.get("Offroad_ConnectivityNeeded") is None or params.get_bool("DisableUpdates") or params.get_bool("SnoozeUpdate")
+    # [sangw 수정] 업데이트 확인(인터넷 연결) 없이도 항상 시작 (docs/SANGW_MODS.md §6)
+    startup_conditions["up_to_date"] = True
     startup_conditions["no_excessive_actuation"] = params.get("Offroad_ExcessiveActuation") is None
     startup_conditions["not_uninstalling"] = not params.get_bool("DoUninstall")
     startup_conditions["accepted_terms"] = params.get("HasAcceptedTerms") == terms_version

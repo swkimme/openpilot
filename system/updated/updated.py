@@ -322,7 +322,8 @@ class Updater:
       else:
         extra_text = exception
       set_offroad_alert("Offroad_UpdateFailed", True, extra_text=extra_text)
-    elif failed_count > 0:
+    # [sangw 수정] 인터넷 없이 오래 달려도 "Connect to internet" 경고·시작 차단을 띄우지 않음 (docs/SANGW_MODS.md §6)
+    elif False and failed_count > 0:
       if dt_uptime_onroad > HOURS_NO_CONNECTIVITY_MAX and dt_route_count > ROUTES_NO_CONNECTIVITY_MAX:
         set_offroad_alert("Offroad_ConnectivityNeeded", True)
       elif dt_uptime_onroad > HOURS_NO_CONNECTIVITY_PROMPT and dt_route_count > ROUTES_NO_CONNECTIVITY_PROMPT:
