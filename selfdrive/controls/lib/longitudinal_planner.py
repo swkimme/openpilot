@@ -162,12 +162,13 @@ class LongitudinalPlanner(LongitudinalPlannerSP):
     output_a_target_e2e = sm['modelV2'].action.desiredAcceleration
     output_should_stop_e2e = sm['modelV2'].action.shouldStop
 
-    # [sangw 수정] 정지선 오프셋: e2e 정지 때 모델 정지 지점보다 조금 더 가서 섬(덜 밟는 쪽으로만)
+    # [sangw 수정] 정지선 오프셋: e2e 정지 때 모델 정지 지점보다 덜 가서 섬(더 밟는 쪽으로만) + 신호 바뀔 때까지 정지 유지
     is_e2e = self.is_e2e(sm)
     lead = sm['radarState'].leadOne
-    output_a_target_e2e = self.stop_line_offset.update(is_e2e and not reset_state, v_ego,
-                                                       sm['modelV2'].position.x, sm['modelV2'].velocity.x,
-                                                       lead.status, lead.dRel, output_a_target_e2e)
+    output_a_target_e2e, hold_stop = self.stop_line_offset.update(is_e2e and not reset_state, v_ego,
+                                                                  sm['modelV2'].position.x, sm['modelV2'].velocity.x,
+                                                                  lead.status, lead.dRel, output_a_target_e2e)
+    output_should_stop_e2e = output_should_stop_e2e or hold_stop
 
     if is_e2e:
       output_a_target = min(output_a_target_e2e, output_a_target_mpc)
