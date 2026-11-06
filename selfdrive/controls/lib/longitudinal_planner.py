@@ -12,6 +12,7 @@ from openpilot.selfdrive.controls.lib.longcontrol import LongCtrlState
 from openpilot.selfdrive.controls.lib.longitudinal_mpc_lib.long_mpc import LongitudinalMpc, LongitudinalPlanSource
 from openpilot.selfdrive.controls.lib.longitudinal_mpc_lib.long_mpc import T_IDXS as T_IDXS_MPC
 from openpilot.selfdrive.controls.lib.drive_helpers import CONTROL_N, get_accel_from_plan
+from openpilot.selfdrive.controls.lib.stop_line_offset import StopLineOffset  # [sangw 수정] 정지선 오프셋
 from openpilot.selfdrive.car.cruise import V_CRUISE_MAX, V_CRUISE_UNSET
 from openpilot.common.swaglog import cloudlog
 
@@ -61,6 +62,7 @@ class LongitudinalPlanner(LongitudinalPlannerSP):
     self.prev_accel_clip = [ACCEL_MIN, ACCEL_MAX]
     self.output_a_target = 0.0
     self.output_should_stop = False
+    self.stop_line_offset = StopLineOffset(dt)  # [sangw 수정] 정지선 오프셋
 
     self.v_desired_trajectory = np.zeros(CONTROL_N)
     self.a_desired_trajectory = np.zeros(CONTROL_N)
@@ -160,7 +162,14 @@ class LongitudinalPlanner(LongitudinalPlannerSP):
     output_a_target_e2e = sm['modelV2'].action.desiredAcceleration
     output_should_stop_e2e = sm['modelV2'].action.shouldStop
 
-    if self.is_e2e(sm):
+    # [sangw 수정] 정지선 오프셋: e2e 정지 때 모델 정지 지점보다 조금 더 가서 섬(덜 밟는 쪽으로만)
+    is_e2e = self.is_e2e(sm)
+    lead = sm['radarState'].leadOne
+    output_a_target_e2e = self.stop_line_offset.update(is_e2e and not reset_state, v_ego,
+                                                       sm['modelV2'].position.x, sm['modelV2'].velocity.x,
+                                                       lead.status, lead.dRel, output_a_target_e2e)
+
+    if is_e2e:
       output_a_target = min(output_a_target_e2e, output_a_target_mpc)
       self.output_should_stop = output_should_stop_e2e or output_should_stop_mpc
       if output_a_target < output_a_target_mpc:
