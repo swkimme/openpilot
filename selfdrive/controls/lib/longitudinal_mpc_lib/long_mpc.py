@@ -9,6 +9,7 @@ from openpilot.common.swaglog import cloudlog
 # WARNING: imports outside of constants will not trigger a rebuild
 from openpilot.selfdrive.modeld.constants import index_function
 from openpilot.selfdrive.controls.radard import _LEAD_ACCEL_TAU
+from openpilot.selfdrive.controls.lib.closing_boost import ClosingFollowBoost  # [sangw 수정]
 
 if __name__ == '__main__':  # generating code
   from acados.acados_template import AcadosModel, AcadosOcp, AcadosOcpSolver
@@ -230,6 +231,7 @@ def gen_long_ocp():
 class LongitudinalMpc:
   def __init__(self, dt=DT_MDL):
     self.dt = dt
+    self.closing_boost = ClosingFollowBoost(dt)  # [sangw 수정]
     self.solver = AcadosOcpSolverCython(MODEL_NAME, ACADOS_SOLVER_TYPE, N)
     self.reset()
     self.source = LongitudinalPlanSource.cruise
@@ -329,7 +331,8 @@ class LongitudinalMpc:
 
   def update(self, radarstate, v_cruise, personality=log.LongitudinalPersonality.standard):
     v_ego = self.x0[1]
-    t_follow = get_T_FOLLOW(personality, v_ego)  # [sangw 수정, docs/SANGW_MODS.md §5]
+    # [sangw 수정, docs/SANGW_MODS.md §5] 속도별 차간 시간 + 앞차에 빠르게 다가갈 때만 잠깐 더함
+    t_follow = get_T_FOLLOW(personality, v_ego) + self.closing_boost.update(v_ego, radarstate.leadOne.status, radarstate.leadOne.vLead)
     self.status = radarstate.leadOne.status or radarstate.leadTwo.status
 
     lead_xv_0 = self.process_lead(radarstate.leadOne)
