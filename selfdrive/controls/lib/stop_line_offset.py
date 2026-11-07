@@ -1,11 +1,12 @@
 # [sangw 수정] 정지선 오프셋 (SANGW_MODS §13)
 # 실험 모드(e2e)는 모델이 낸 감속을 그대로 써서 정지선을 약 3m 넘어서 섬(2026-11-06 상우).
 # 모델 계획이 '정지'로 바뀌면 그 정지 지점 - OFFSET을 주행거리 기준으로 고정하고,
-# 그 지점에 맞는 등감속(-v²/2d)이 필요해지면 그만큼 밟음 → 덜 가서 섬. 멀리서부터 미리 밟지는 않음.
+# 그 지점까지 -K·v²/d로 밟음 → 덜 가서 섬. K>0.5라 끝으로 갈수록 감속이 0으로 줄어 부드럽게 멈춤.
+# 멀리서부터 미리 밟지는 않음.
 # 덜 밟는 쪽으로는 절대 바꾸지 않음(항상 min). 선 뒤에 선 뒤엔 신호가 바뀔 때까지 붙잡아 둠.
 import numpy as np
 
-STOP_LINE_OFFSET = 2.5   # m. 모델 정지 지점보다 이만큼 덜 가서 섬
+STOP_LINE_OFFSET = 2.0   # m. 모델 정지 지점보다 이만큼 덜 가서 섬
 MIN_LATCH_SPEED = 2.0    # m/s. 이보다 느릴 때는 새로 잡지 않음(정차·서행 중)
 MAX_LATCH_SPEED = 22.0   # m/s(약 80km/h). 이보다 빠를 때는 새로 잡지 않음
 PLAN_STOP_V = 0.5        # m/s. 모델 계획 끝 속도가 이 아래면 '정지 계획'
@@ -17,9 +18,12 @@ LEAD_MARGIN = 15.0       # m. 레이더 앞차가 목표 지점 + 이 거리 안
 FILTER_K = 0.2           # 목표 지점 갱신 비율(20Hz 기준 약 0.25초)
 MAX_EXTRA_DECEL = -2.5   # m/s². 오프셋 때문에 이보다 세게는 안 밟음(모델이 원래 세게 밟는 건 그대로)
 BLEND_DECEL = (0.8, 1.4)  # m/s². 필요한 감속이 앞 값을 넘으면 섞기 시작, 뒤 값부터 전부 적용 — 멀리서부터 미리 밟지 않게
-PAST_TARGET_DECEL = -1.0  # m/s². 목표를 지났는데 아직 굴러가면 최소 이만큼 밟음
+PAST_TARGET_DECEL = -0.4  # m/s². 목표를 지났는데 아직 굴러가면 최소 이만큼 밟음
+SOFT_STOP_K = 0.6        # 감속 = -K·v²/남은거리. 0.5면 끝까지 같은 세기(정지 단계가 그 값을 물고 툭 섬), 클수록 끝에서 빨리 줄고 처음이 셈
+MIN_REM = 0.3            # m. 남은 거리를 이보다 작게 안 봄 — 끝에서 감속이 튀지 않게
 HOLD_SPEED = 0.3         # m/s. 이보다 느리고
-HOLD_REM = 0.5           # m. 목표까지 이보다 가까우면(지난 경우 포함) 정지 유지
+STOPPED_SPEED = 0.05     # m/s. 이보다 느리면 선 것으로 봄
+HOLD_REM = 0.2           # m. 목표까지 이보다 가까우면(지난 경우 포함) 정지 유지
 
 
 class StopLineOffset:
@@ -65,7 +69,7 @@ class StopLineOffset:
         return a_model, False
       rem_new = d_model - self.offset
       # 이미 늦었으면(목표가 너무 가깝거나 세게 밟아야 함) 이번 정지는 모델대로
-      if rem_new < MIN_LATCH_REM or -(v_ego ** 2) / (2.0 * rem_new) < MAX_EXTRA_DECEL:
+      if rem_new < MIN_LATCH_REM or -SOFT_STOP_K * v_ego ** 2 / rem_new < MAX_EXTRA_DECEL:
         return a_model, False
       self.target = self.s + rem_new
     elif d_model is not None and self.target - self.s > FREEZE_REM:
@@ -77,10 +81,11 @@ class StopLineOffset:
       return a_model, False
 
     # 목표에서 거의 섰으면 정지 유지 — 모델이 남은 거리를 기어가려고 다시 출발하는 것 막음
-    if v_ego < HOLD_SPEED and (rem < HOLD_REM or (self.w > 0.0 and rem < FREEZE_REM)):
+    if (v_ego < HOLD_SPEED and rem < HOLD_REM) or (v_ego < STOPPED_SPEED and self.w > 0.0 and rem < FREEZE_REM):
       return min(a_model, 0.0), True
 
-    a_needed = max(-(v_ego ** 2) / (2.0 * max(rem, 0.1)), MAX_EXTRA_DECEL)
+    # HOLD_SPEED로 목표에 닿게 밟음 — 0으로 잡으면 목표 전에 느려져 일찍 정지 유지가 걸림
+    a_needed = max(-SOFT_STOP_K * max(v_ego ** 2 - HOLD_SPEED ** 2, 0.0) / max(rem, MIN_REM), MAX_EXTRA_DECEL)
     if rem <= 0.1:
       a_needed = min(a_needed, PAST_TARGET_DECEL)
     w = (-a_needed - BLEND_DECEL[0]) / (BLEND_DECEL[1] - BLEND_DECEL[0])
