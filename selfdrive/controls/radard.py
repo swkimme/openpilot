@@ -162,13 +162,15 @@ def get_RadarState_from_vision(lead_msg: capnp._DynamicStructReader, v_ego: floa
 
 # [sangw 수정, docs/SANGW_MODS.md] 앞차 인식 확률 기준 0.5 → 0.4. 끼어드는 차를 더 일찍 앞차로 잡음(대신 오인식 감속 가능성 증가).
 LEAD_PROB_MIN = 0.4
+# [sangw 수정, SANGW_MODS §4] 2초 뒤 앞차(끼어들 것 같은 차) 기준만 0.4 → 0.3. 화면 표시·감속이 더 일찍 시작(2026-11-08 상우: 끼어든 차를 늦게 잡음).
+LEAD_TWO_PROB_MIN = 0.3
 
 
 def get_lead(v_ego: float, ready: bool, tracks: dict[int, Track], lead_msg: capnp._DynamicStructReader,
              model_v_ego: float, lead_prob: float, CP: structs.CarParams, CP_SP: structs.CarParamsSP,
-             low_speed_override: bool = True) -> dict[str, Any]:
+             low_speed_override: bool = True, prob_min: float = LEAD_PROB_MIN) -> dict[str, Any]:
   # Determine leads, this is where the essential logic happens
-  if len(tracks) > 0 and ready and lead_prob > LEAD_PROB_MIN:
+  if len(tracks) > 0 and ready and lead_prob > prob_min:
     track = match_vision_to_track(v_ego, lead_msg, tracks)
   else:
     track = None
@@ -177,7 +179,7 @@ def get_lead(v_ego: float, ready: bool, tracks: dict[int, Track], lead_msg: capn
   if track is not None:
     lead_dict = track.get_RadarState(lead_prob)
     lead_dict = get_custom_yrel(CP, CP_SP, lead_dict, lead_msg)
-  elif (track is None) and ready and (lead_prob > LEAD_PROB_MIN):
+  elif (track is None) and ready and (lead_prob > prob_min):
     lead_dict = get_RadarState_from_vision(lead_msg, v_ego, model_v_ego, lead_prob)
 
   if low_speed_override:
@@ -273,7 +275,7 @@ class RadarD:
       self.radar_state.leadOne = get_lead(self.v_ego, self.ready, self.tracks, leads_v3[0], model_v_ego, self.lead_prob_filters[0].x,
                                           self.CP, self.CP_SP, low_speed_override=True)
       self.radar_state.leadTwo = get_lead(self.v_ego, self.ready, self.tracks, leads_v3[1], model_v_ego, self.lead_prob_filters[1].x,
-                                          self.CP, self.CP_SP, low_speed_override=False)
+                                          self.CP, self.CP_SP, low_speed_override=False, prob_min=LEAD_TWO_PROB_MIN)
 
   def publish(self, pm: messaging.PubMaster):
     assert self.radar_state is not None
